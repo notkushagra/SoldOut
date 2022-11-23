@@ -75,7 +75,7 @@ public class RegisterActivity extends AppCompatActivity {
                 final String passwordTxt = password.getText().toString();
                 final String confirm_passwordTxt = confirm_password.getText().toString();
 
-                List<String> auctionedProducts = new ArrayList<>();
+                List<String> auctionProducts = new ArrayList<>();
                 List<String> boughtProducts = new ArrayList<>();
                 List<String> sellingProducts = new ArrayList<>();
 
@@ -114,7 +114,7 @@ public class RegisterActivity extends AppCompatActivity {
                                             user.put("fullname", full_nameTxt);
                                             user.put("phone", phoneTxt);
                                             user.put("room no", room_noTxt);
-                                            user.put("auctionedProducts", auctionedProducts);
+                                            user.put("auctionProducts", auctionProducts);
                                             user.put("boughtProducts", boughtProducts);
                                             user.put("sellingProducts", sellingProducts);
 

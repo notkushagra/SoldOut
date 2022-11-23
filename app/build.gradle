@@ -41,7 +41,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
     implementation 'com.google.firebase:firebase-database:20.1.0'
     // dependency sor slider view
-     implementation 'com.github.smarteist:autoimageslider:1.4.0'
+
     // dependency for loading image from url
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     implementation 'com.squareup.picasso:picasso:2.71828'

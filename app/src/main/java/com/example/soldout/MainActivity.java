@@ -24,12 +24,7 @@ public class MainActivity extends AppCompatActivity {
         signOutBtn.setOnClickListener(new handleSignOut());
 
         final Button addProductBtn = findViewById(R.id.addProductBtn);
-        addProductBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, AddProduct.class));
-            }
-        });
+        addProductBtn.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, AddProduct.class)));
 
 
     }

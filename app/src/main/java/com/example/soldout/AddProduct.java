@@ -9,9 +9,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ClipData;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -22,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -39,10 +41,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public class AddProduct extends AppCompatActivity {
     final String TAG = "AddProductActivity";
 
+    String currentUserId;
     FirebaseStorage storage;
     StorageReference storageRef;
     FirebaseAuth mAuth;
@@ -52,8 +56,17 @@ public class AddProduct extends AppCompatActivity {
     EditText productName, productDesc, productPrice;
     ImageView imgUplaoded;
     Button addImgBtn, sellBtn, auctionBtn;
+    ProgressDialog progressBar;
 
+    String productNameTxt, productDescTxt, productPriceTxt, productId;
     Uri ImageUri;
+    String ImageUrl;
+    List<String> images;
+    ArrayList<Uri> mImageUriArray; // contains Uri of all the images
+
+
+    String imageEncoded;
+    List<String> imagesEncodedList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +79,8 @@ public class AddProduct extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 //        storageRef = storage.getReference();
 
+        currentUserId = currentUser.getUid();
+
         imgUplaoded = findViewById(R.id.imgUplaoded);
         addImgBtn = findViewById(R.id.addImgBtn);
         sellBtn = findViewById(R.id.sellBtn);
@@ -74,219 +89,277 @@ public class AddProduct extends AppCompatActivity {
         productName = findViewById(R.id.productName);
         productPrice = findViewById(R.id.productPrice);
 
-        ProgressDialog progressBar = new ProgressDialog(this);
+        progressBar = new ProgressDialog(this);
         progressBar.setCancelable(true);//you can cancel it by pressing back button
         progressBar.setMessage("Wait a minute ;)");
         progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
-        addImgBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent iGallery = new Intent(Intent.ACTION_PICK);
-                iGallery.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                addImageResultLauncher.launch(iGallery);
-            }
-        });
+        mImageUriArray = new ArrayList<Uri>();
+        images = new ArrayList<>();
+        Log.d(TAG, "OnCreate");
 
-        sellBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                progressBar.show();
-
-                //get data from entry points
-                final String productNameTxt = productName.getText().toString();
-                final String productDescTxt = productDesc.getText().toString();
-                final String productPriceTxt = productPrice.getText().toString();
-                //imageUri comes from add image button
-
-                if (ImageUri == null) {
-                    progressBar.dismiss();
-                    Toast.makeText(AddProduct.this, "Attach at least one image", Toast.LENGTH_SHORT).show();
-                } else if (productNameTxt.trim().equals("") || productDescTxt.trim().equals("") || productPriceTxt.trim().equals("")) {
-                    progressBar.dismiss();
-                    Toast.makeText(AddProduct.this, "Enter all the details", Toast.LENGTH_SHORT).show();
-                } else {
-                    //save instance in firestore
-                    Map<String, Object> product = new HashMap<>();
-                    boolean intiSoldStatus = false;
-                    int initVisitCount = 0;
-                    List<String> tags = new ArrayList<>();
-                    List<String> images = new ArrayList<>();
-                    final String userIDTxt = currentUser.getUid().toString();
-
-                    //giving the uploaded file a name
-                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.CANADA);
-                    Date now = new Date();
-                    String fileName = formatter.format(now);
-                    String filePath = "images/" + currentUser.getUid() + "/" + productNameTxt.toLowerCase() + "/" + fileName;
-                    images.add(filePath);
-                    storageRef = storage.getReference(filePath);
-
-                    product.put("name", productNameTxt);
-                    product.put("desc", productDescTxt);
-                    product.put("price", productPriceTxt);
-                    product.put("buyerId", "");
-                    product.put("sellerId", userIDTxt);
-                    product.put("soldStatus", intiSoldStatus);
-                    product.put("visitCount", initVisitCount);
-                    product.put("tags", tags);
-                    product.put("images", images);
-
-                    //adding user to Users
-                    db.collection("sellingProducts")
-                            .add(product)
-                            .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DocumentReference> task) {
-                                    if (task.isSuccessful()) {
-                                        Log.d(TAG, task.getResult().toString());
-                                        Log.d(TAG, task.getResult().getId());
-                                        Log.d(TAG, "check");
-                                        final String productId = task.getResult().getId();
-
-                                        //save image in cloud storage
-
-                                        storageRef.putFile(ImageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                                                if (task.isSuccessful()) {
-                                                    imgUplaoded.setImageURI(null);
-                                                    Toast.makeText(AddProduct.this, "Successfully Uploaded", Toast.LENGTH_SHORT).show();
-                                                    db.collection("users").document(userIDTxt).update("sellingProducts", FieldValue.arrayUnion(productId)).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                            if (task.isSuccessful()) {
-                                                                progressBar.dismiss();
-                                                                startActivity(new Intent(AddProduct.this, MainActivity.class));
-                                                            } else {
-                                                                progressBar.dismiss();
-                                                                Toast.makeText(AddProduct.this, task.getException().getMessage().toString(), Toast.LENGTH_SHORT).show();
-                                                            }
-                                                        }
-                                                    });
-
-                                                } else {
-                                                    progressBar.dismiss();
-                                                    Toast.makeText(AddProduct.this, task.getException().getMessage().toString(), Toast.LENGTH_SHORT).show();
-                                                }
-                                            }
-                                        });
-                                    } else {
-                                        progressBar.dismiss();
-                                        Log.d(TAG, "add to db fails");
-                                    }
-                                }
-                            });
-                }
-            }
-        });
-
-        auctionBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                progressBar.show();
-
-                final String productNameTxt = productName.getText().toString();
-                final String productDescTxt = productDesc.getText().toString();
-                final String productPriceTxt = productPrice.getText().toString();
-                //imageUri comes from add image button
-
-                if (ImageUri == null) {
-                    progressBar.dismiss();
-                    Toast.makeText(AddProduct.this, "Attach at least one image", Toast.LENGTH_SHORT).show();
-                } else if (productNameTxt.trim().equals("") || productDescTxt.trim().equals("") || productPriceTxt.trim().equals("")) {
-                    progressBar.dismiss();
-                    Toast.makeText(AddProduct.this, "Enter all the details", Toast.LENGTH_SHORT).show();
-                } else {
-                    //save instance in firestore
-                    Map<String, Object> product = new HashMap<>();
-                    boolean intiSoldStatus = false;
-                    int initVisitCount = 0;
-                    List<String> tags = new ArrayList<>();
-                    List<String> images = new ArrayList<>();
-                    final String userIDTxt = currentUser.getUid().toString();
-
-                    //giving the uploaded file a name
-                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.CANADA);
-                    Date now = new Date();
-                    String fileName = formatter.format(now);
-                    String filePath = "images/" + currentUser.getUid() + "/" + productNameTxt.toLowerCase() + "/" + fileName;
-                    images.add(filePath);
-                    storageRef = storage.getReference(filePath);
-
-                    product.put("name", productNameTxt);
-                    product.put("desc", productDescTxt);
-                    product.put("highestBid", productPriceTxt);
-                    product.put("highestBidderId", "");
-                    product.put("sellerId", userIDTxt);
-                    product.put("soldStatus", intiSoldStatus);
-                    product.put("visitCount", initVisitCount);
-                    product.put("tags", tags);
-                    product.put("images", images);
-
-                    //adding user to Users
-                    db.collection("auctionProducts")
-                            .add(product)
-                            .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DocumentReference> task) {
-                                    if (task.isSuccessful()) {
-                                        Log.d(TAG, task.getResult().toString());
-                                        Log.d(TAG, task.getResult().getId());
-                                        Log.d(TAG, "check");
-                                        final String productId = task.getResult().getId();
-
-                                        //save image in cloud storage
-
-                                        storageRef.putFile(ImageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                                                if (task.isSuccessful()) {
-                                                    imgUplaoded.setImageURI(null);
-                                                    Toast.makeText(AddProduct.this, "Successfully Uploaded", Toast.LENGTH_SHORT).show();
-                                                    db.collection("users").document(userIDTxt).update("auctionProducts", FieldValue.arrayUnion(productId)).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                            if (task.isSuccessful()) {
-                                                                progressBar.dismiss();
-                                                                startActivity(new Intent(AddProduct.this, MainActivity.class));
-                                                            } else {
-                                                                progressBar.dismiss();
-                                                                Toast.makeText(AddProduct.this, task.getException().getMessage().toString(), Toast.LENGTH_SHORT).show();
-                                                            }
-                                                        }
-                                                    });
-                                                } else {
-                                                    progressBar.dismiss();
-                                                    Toast.makeText(AddProduct.this, task.getException().getMessage().toString(), Toast.LENGTH_SHORT).show();
-                                                }
-                                            }
-                                        });
-                                    } else {
-                                        progressBar.dismiss();
-                                        Log.d(TAG, "add to db fails");
-                                    }
-                                }
-                            });
-                }
-            }
-        });
+        addImgBtn.setOnClickListener(new handleAddImage());
+        sellBtn.setOnClickListener(new handleSellBtn());
+        auctionBtn.setOnClickListener(new handleAuctionBtn());
 
     }
 
-    ActivityResultLauncher<Intent> addImageResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    final int resultCode = result.getResultCode();
-                    if (resultCode == Activity.RESULT_OK) {
-                        // There are no request codes so no need to check for req code
-                        Intent data = result.getData();
-                        ImageUri = data.getData();
-                        imgUplaoded.setImageURI(ImageUri);
+    class handleAddImage implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            Log.d(TAG, "Clicked Add Image button");
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            addImageResultLauncher.launch(intent);
+        }
+    }
 
+    ActivityResultLauncher<Intent> addImageResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            try {
+                final int resultCode = result.getResultCode();
+                if (resultCode == Activity.RESULT_OK) {
+                    // There are no request codes so no need to check for req code
+                    Intent data = result.getData();
+                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                    imagesEncodedList = new ArrayList<String>();
+
+                    if (data.getData() != null) {
+                        // SINGLE FILE SELECTED
+                        Uri mImageUri = data.getData();
+                        mImageUriArray.add(mImageUri);
+                        imgUplaoded.setImageURI(mImageUri);
+                        Log.d(TAG, "added only 1 imgUri in mImageUri");
+
+                        Cursor cursor = getContentResolver().query(mImageUri, filePathColumn, null, null, null);
+                        cursor.moveToFirst();
+
+                        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                        imageEncoded = cursor.getString(columnIndex);
+                        cursor.close();
+                    } else {
+                        if (data.getClipData() != null) {
+                            // MULTIPLE FILE SELECTED
+                            ClipData mClipData = data.getClipData();
+                            for (int i = 0; i < mClipData.getItemCount(); i++) {
+                                String finalI = String.valueOf(i);
+                                ClipData.Item item = mClipData.getItemAt(i);
+                                Uri uri = item.getUri();
+                                mImageUriArray.add(uri);
+                                Log.d(TAG, "added image: " + finalI);
+
+                                // Get the cursor
+                                Cursor cursor = getContentResolver().query(uri, filePathColumn, null, null, null);
+                                // Move to first row
+                                cursor.moveToFirst();
+
+                                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                                imageEncoded = cursor.getString(columnIndex);
+                                imagesEncodedList.add(imageEncoded);
+                                cursor.close();
+                            }
+
+                            imgUplaoded.setImageURI(mImageUriArray.get(0));
+                            Log.v(TAG, "Selected Images - " + mImageUriArray.size());
+                        }
+                    }
+                } else {
+                    Log.d(TAG, "No image pciked");
+                    Toast.makeText(AddProduct.this, "Pick at least one image", Toast.LENGTH_LONG).show();
+                }
+            } catch (Exception e) {
+                Log.d(TAG, "catch block " + e.getMessage());
+                Toast.makeText(AddProduct.this, e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }
+    });
+
+    class handleAuctionBtn implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            progressBar.show();
+
+            //get data from entry points
+            productNameTxt = productName.getText().toString();
+            productDescTxt = productDesc.getText().toString();
+            productPriceTxt = productPrice.getText().toString();
+
+            if (mImageUriArray == null || mImageUriArray.size() == 0) {
+                progressBar.dismiss();
+                Toast.makeText(AddProduct.this, "Attach at least one image", Toast.LENGTH_SHORT).show();
+                return;
+            } else if (productNameTxt.trim().equals("") || productDescTxt.trim().equals("") || productPriceTxt.trim().equals("")) {
+                progressBar.dismiss();
+                Toast.makeText(AddProduct.this, "Enter all the details", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            Log.d(TAG, "Product entry in auctionProducts");
+            Map<String, Object> product = new HashMap<>();
+            boolean initSoldStatus = false;
+            int initVisitCount = 0;
+            List<String> tags = new ArrayList<>();
+            List<String> images = new ArrayList<>();
+
+            product.put("name", productNameTxt);
+            product.put("desc", productDescTxt);
+            product.put("price", productPriceTxt);
+            product.put("highestBidderId", "");
+            product.put("sellerId", currentUserId);
+            product.put("soldStatus", initSoldStatus);
+            product.put("visitCount", initVisitCount);
+            product.put("tags", tags);
+            product.put("images", images);
+
+            db.collection("auctionProducts")
+                    .add(product).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentReference> task) {
+                            if (task.isSuccessful()) {
+                                //setting productID to be used later
+                                productId = task.getResult().getId();
+                                Log.d(TAG, "Product added in auction products: " + productId);
+                                storeProductIdInUsers("auctionProducts");
+                            } else {
+                                progressBar.dismiss();
+                                String ErrorMsg = task.getException().getMessage().toString();
+                                Toast.makeText(AddProduct.this, ErrorMsg, Toast.LENGTH_SHORT).show();
+                                Log.d(TAG, ErrorMsg);
+                            }
+                        }
+                    });
+        }
+    }
+
+    class handleSellBtn implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            progressBar.show();
+
+            //get data from entry points
+            productNameTxt = productName.getText().toString();
+            productDescTxt = productDesc.getText().toString();
+            productPriceTxt = productPrice.getText().toString();
+
+            if (mImageUriArray == null || mImageUriArray.size() == 0) {
+                progressBar.dismiss();
+                Toast.makeText(AddProduct.this, "Attach at least one image", Toast.LENGTH_SHORT).show();
+                return;
+            } else if (productNameTxt.trim().equals("") || productDescTxt.trim().equals("") || productPriceTxt.trim().equals("")) {
+                progressBar.dismiss();
+                Toast.makeText(AddProduct.this, "Enter all the details", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            //put product entry in
+            Log.d(TAG, "Product entry in sellingProducts");
+            Map<String, Object> product = new HashMap<>();
+            boolean initSoldStatus = false;
+            int initVisitCount = 0;
+            List<String> tags = new ArrayList<>();
+            List<String> images = new ArrayList<>();
+
+            product.put("name", productNameTxt);
+            product.put("desc", productDescTxt);
+            product.put("price", productPriceTxt);
+            product.put("buyerId", "");
+            product.put("sellerId", currentUserId);
+            product.put("soldStatus", initSoldStatus);
+            product.put("visitCount", initVisitCount);
+            product.put("tags", tags);
+            product.put("images", images);
+
+            db.collection("sellingProducts")
+                    .add(product).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentReference> task) {
+                            if (task.isSuccessful()) {
+                                //setting productID to be used later
+                                productId = task.getResult().getId();
+                                Log.d(TAG, "Product added in selling products: " + productId);
+                                storeProductIdInUsers("sellingProducts");
+                            } else {
+                                progressBar.dismiss();
+                                String ErrorMsg = task.getException().getMessage().toString();
+                                Toast.makeText(AddProduct.this, ErrorMsg, Toast.LENGTH_SHORT).show();
+                                Log.d(TAG, ErrorMsg);
+                            }
+                        }
+                    });
+        }
+    }
+
+    void storeProductIdInUsers(String typeOfProduct) {
+        db.collection("users").document(currentUserId).update(typeOfProduct, FieldValue.arrayUnion(productId)).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Log.d(TAG, "Added Product: " + productId + " in " + typeOfProduct + " section of user " + currentUserId);
+                    storeImagesInFireStore(typeOfProduct);
+                } else {
+                    progressBar.dismiss();
+                    String ErrorMsg = task.getException().getMessage().toString();
+                    Toast.makeText(AddProduct.this, ErrorMsg, Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, ErrorMsg);
+                }
+            }
+        });
+    }
+
+    void storeImagesInFireStore(String typeOfProduct) {
+        progressBar.setMessage("Image Upload Takes Some Time");
+        int n = mImageUriArray.size();
+        Log.d(TAG, "About to put images in firestore : " + n + " images");
+
+        for (int i = 0; i < n; i++) {
+
+            //generating filePath and fileName
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.CANADA);
+            Date now = new Date();
+            String fileName = formatter.format(now) + "_image_" + (i + 1);
+            String filePath = "images/" + currentUser.getUid() + "/" + productNameTxt.toLowerCase() + "/" + fileName;
+
+            // now we get reference to the area our file is uploaded in
+            StorageReference storageRef = storage.getReference(filePath);
+            Uri ImageUri = mImageUriArray.get(i);
+
+            int finalI = i;
+            storageRef.putFile(ImageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        Log.d(TAG, "Added " + finalI + " file in cloud firebase");
+
+                        storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                Log.d(TAG, "got DownloadUrl of " + finalI + " from cloud firebase");
+                                String imgUrl = uri.toString();
+                                db.collection(typeOfProduct).document(productId).update("images", FieldValue.arrayUnion(imgUrl)).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Log.d(TAG, "ImgUrl Uploaded of " + finalI + " to firestore " + imgUrl.toString());
+                                        } else {
+                                            Log.d(TAG, task.getException().getMessage().toString());
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    } else {
+                        progressBar.dismiss();
+                        String ErrorMsg = task.getException().getMessage().toString();
+                        Toast.makeText(AddProduct.this, ErrorMsg, Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, ErrorMsg);
                     }
                 }
             });
+        }
+        progressBar.dismiss();
+        Toast.makeText(AddProduct.this, "Image upload may take some time", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(AddProduct.this, MainActivity.class));
+    }
 }
