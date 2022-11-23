@@ -12,11 +12,13 @@
         android:id="@+id/add_product_heading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="monospace"
-        android:text="What do you want to sell \ntoday?"
-        android:textAllCaps="true"
+        android:fontFamily="sans-serif-medium"
+        android:text="W h a t   d o   y o u   w a n t \n t o   s e l l   t o d a y ?"
+        android:textAlignment="center"
         android:textColor="@color/black"
-        android:textSize="20dp" />
+        android:textSize="20dp"
+
+        />
 
     <EditText
         android:id="@+id/productName"
@@ -30,7 +32,7 @@
     <EditText
         android:id="@+id/productDesc"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="200dp"
         android:gravity="top|start"
         android:hint="Enter Description"
         android:inputType="textMultiLine"
@@ -47,39 +49,63 @@
 
     <Button
         android:id="@+id/addImgBtn"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:drawableLeft="@drawable/ic_baseline_image_24"
-        android:text="Add Image" />
+        android:background="@drawable/btn_bg"
+        android:drawableStart="@drawable/ic_baseline_image_24"
+        android:drawablePadding="-10dp"
+        android:paddingLeft="20dp"
+        android:text="A d d    I m a g e"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:typeface="sans"
+        android:layout_margin="10dp"
+        />
 
-    <ImageView
-        android:id="@+id/imgUplaoded"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_gravity="center"
-        android:layout_margin="10dp" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.denzcoskun.imageslider.ImageSlider
+            android:id="@+id/imageSlider"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:iss_corner_radius="10"
+            app:iss_title_background="@drawable/gradient" />
+    </LinearLayout>
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_margin="10dp">
 
         <Button
             android:id="@+id/sellBtn"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Sell it!" />
+            android:background="@drawable/btn_bg"
+            android:text="S e l l   i t !"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:typeface="sans" />
 
         <Button
             android:id="@+id/auctionBtn"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_weight="1"
-            android:text="Auction It!" />
+            android:background="@drawable/btn_bg"
+            android:text="A u c t i o n   I t !"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:typeface="sans" />
 
     </LinearLayout>
 

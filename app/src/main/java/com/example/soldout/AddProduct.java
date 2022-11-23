@@ -43,6 +43,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import com.denzcoskun.imageslider.ImageSlider;
+import com.denzcoskun.imageslider.constants.ScaleTypes;
+import com.denzcoskun.imageslider.models.SlideModel;
+
 public class AddProduct extends AppCompatActivity {
     final String TAG = "AddProductActivity";
 
@@ -64,7 +68,8 @@ public class AddProduct extends AppCompatActivity {
     List<String> images;
     ArrayList<Uri> mImageUriArray; // contains Uri of all the images
 
-
+    ArrayList<SlideModel> slideModels;
+    private ImageSlider imageSlider;
     String imageEncoded;
     List<String> imagesEncodedList;
 
@@ -81,7 +86,7 @@ public class AddProduct extends AppCompatActivity {
 
         currentUserId = currentUser.getUid();
 
-        imgUplaoded = findViewById(R.id.imgUplaoded);
+//        imgUplaoded = findViewById(R.id.imgUplaoded);
         addImgBtn = findViewById(R.id.addImgBtn);
         sellBtn = findViewById(R.id.sellBtn);
         auctionBtn = findViewById(R.id.auctionBtn);
@@ -94,6 +99,8 @@ public class AddProduct extends AppCompatActivity {
         progressBar.setMessage("Wait a minute ;)");
         progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
+        imageSlider = findViewById(R.id.imageSlider);
+        slideModels = new ArrayList<>();
         mImageUriArray = new ArrayList<Uri>();
         images = new ArrayList<>();
         Log.d(TAG, "OnCreate");
@@ -131,7 +138,7 @@ public class AddProduct extends AppCompatActivity {
                         // SINGLE FILE SELECTED
                         Uri mImageUri = data.getData();
                         mImageUriArray.add(mImageUri);
-                        imgUplaoded.setImageURI(mImageUri);
+//                        imgUplaoded.setImageURI(mImageUri);
                         Log.d(TAG, "added only 1 imgUri in mImageUri");
 
                         Cursor cursor = getContentResolver().query(mImageUri, filePathColumn, null, null, null);
@@ -162,7 +169,7 @@ public class AddProduct extends AppCompatActivity {
                                 cursor.close();
                             }
 
-                            imgUplaoded.setImageURI(mImageUriArray.get(0));
+//                            imgUplaoded.setImageURI(mImageUriArray.get(0));
                             Log.v(TAG, "Selected Images - " + mImageUriArray.size());
                         }
                     }
@@ -170,6 +177,12 @@ public class AddProduct extends AppCompatActivity {
                     Log.d(TAG, "No image pciked");
                     Toast.makeText(AddProduct.this, "Pick at least one image", Toast.LENGTH_LONG).show();
                 }
+//                        System.out.println(images.get(0));
+                for (int i = 0; i < mImageUriArray.size(); i++) {
+                    slideModels.add(new SlideModel(mImageUriArray.get(i).toString(), ScaleTypes.CENTER_INSIDE));
+                }
+                imageSlider.setImageList(slideModels, ScaleTypes.CENTER_INSIDE);
+
             } catch (Exception e) {
                 Log.d(TAG, "catch block " + e.getMessage());
                 Toast.makeText(AddProduct.this, e.getMessage(), Toast.LENGTH_LONG).show();

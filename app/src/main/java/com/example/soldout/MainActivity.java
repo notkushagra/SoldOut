@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -12,6 +13,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
+    String productId = "M0t2hceFd4HUoZXBkoM7";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,12 +22,21 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
+
         final Button signOutBtn = findViewById(R.id.signOutBtn);
         signOutBtn.setOnClickListener(new handleSignOut());
 
         final Button addProductBtn = findViewById(R.id.addProductBtn);
         addProductBtn.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, AddProduct.class)));
 
+        final Button productDetailBtn = findViewById(R.id.productDetailBtn);
+        productDetailBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, ProductDetailsActivity.class);
+            intent.putExtra("EXTRA_PRODUCT_ID", productId);
+//            creates an intent and puts a pair inside the intent {key:value} -> { "EXTRA_PRODUCT_ID" : productId}
+            Log.d("check ", intent.getStringExtra("EXTRA_PRODUCT_ID"));
+            startActivity(intent);
+        });
 
     }
 
