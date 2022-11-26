@@ -13,8 +13,8 @@
         android:id="@+id/productName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
         android:gravity="center"
+        android:fontFamily="@font/alata"
         android:text="@string/loading"
         android:textAlignment="center"
         android:textSize="30dp" />
@@ -44,9 +44,10 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="20dp"
+        android:fontFamily="@font/alata"
         android:text="@string/loading"
         android:textAlignment="center"
-        android:textSize="15dp" />
+        android:textSize="12dp" />
 
     <TextView
         android:id="@+id/sellerInfo"
@@ -55,6 +56,7 @@
         android:background="#D9D9D9"
         android:gravity="center"
         android:padding="20dp"
+        android:fontFamily="@font/alata"
         android:text="@string/loading"
         android:textAlignment="center"
         android:textSize="15dp"
@@ -68,6 +70,7 @@
         android:background="#979797"
         android:gravity="center"
         android:padding="20dp"
+        android:fontFamily="@font/alata"
         android:text="@string/loading"
         android:textAlignment="center"
         android:textSize="20dp"
@@ -78,11 +81,13 @@
         android:id="@+id/bidNowBtn"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_margin="50dp"
         android:background="@drawable/btn_bg"
         android:gravity="center"
-        android:text="@string/buy_now"
+        android:fontFamily="@font/alata"
+        android:text="B U Y   N O W"
         android:textColor="@color/light1"
-        android:typeface="sans" />
+        android:textSize="15dp"
+        android:layout_margin="50dp"
+        />
 
 </LinearLayout>

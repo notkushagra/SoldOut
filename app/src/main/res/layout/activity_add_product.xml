@@ -12,8 +12,8 @@
         android:id="@+id/add_product_heading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
-        android:text="W h a t   d o   y o u   w a n t \n t o   s e l l   t o d a y ?"
+        android:fontFamily="@font/alata"
+        android:text="What do you want to \n sell today ?"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="20dp"
@@ -25,6 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
 
+        android:fontFamily="@font/alata"
         android:hint="Enter Product Name"
         android:inputType="text"
         android:maxLines="1" />
@@ -33,6 +34,7 @@
         android:id="@+id/productDesc"
         android:layout_width="match_parent"
         android:layout_height="200dp"
+        android:fontFamily="@font/alata"
         android:gravity="top|start"
         android:hint="Enter Description"
         android:inputType="textMultiLine"
@@ -43,6 +45,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
 
+        android:fontFamily="@font/alata"
         android:hint="Enter Price or Base Price"
         android:inputType="number"
         android:maxLines="1" />
@@ -52,16 +55,16 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_margin="10dp"
         android:background="@drawable/btn_bg"
         android:drawableStart="@drawable/ic_baseline_image_24"
         android:drawablePadding="-10dp"
+        android:fontFamily="@font/alata"
         android:paddingLeft="20dp"
         android:text="A d d    I m a g e"
         android:textColor="@color/white"
         android:textStyle="bold"
-        android:typeface="sans"
-        android:layout_margin="10dp"
-        />
+        android:typeface="sans" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -79,8 +82,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="10dp">
+        android:layout_margin="10dp"
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/sellBtn"
@@ -89,6 +92,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/btn_bg"
+            android:fontFamily="@font/alata"
             android:text="S e l l   i t !"
             android:textColor="@color/white"
             android:textStyle="bold"
@@ -102,6 +106,7 @@
             android:layout_marginStart="10dp"
             android:layout_weight="1"
             android:background="@drawable/btn_bg"
+            android:fontFamily="@font/alata"
             android:text="A u c t i o n   I t !"
             android:textColor="@color/white"
             android:textStyle="bold"

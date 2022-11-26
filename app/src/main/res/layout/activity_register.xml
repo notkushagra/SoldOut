@@ -27,6 +27,7 @@
 
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
+        android:fontFamily="@font/alata"
         android:hint="Full Name"
         android:inputType="text"
         android:maxLines="1" />
@@ -37,6 +38,7 @@
 
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
+        android:fontFamily="@font/alata"
         android:hint="Phone Number"
         android:inputType="phone"
         android:maxLines="1" />
@@ -47,6 +49,7 @@
 
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
+        android:fontFamily="@font/alata"
         android:hint="Room Number"
         android:inputType="text"
         android:maxLines="1" />
@@ -58,6 +61,7 @@
 
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
+        android:fontFamily="@font/alata"
         android:hint="Email"
         android:inputType="textEmailAddress"
         android:maxLines="1" />
@@ -68,6 +72,7 @@
         android:layout_height="50dp"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
+        android:fontFamily="@font/alata"
         android:hint="Password"
         android:inputType="textPassword"
         android:maxLines="1" />
@@ -77,6 +82,7 @@
         android:layout_height="50dp"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
+        android:fontFamily="@font/alata"
         android:hint="Confirm Password"
         android:inputType="textPassword"
         android:maxLines="1" />
@@ -90,6 +96,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
+        android:fontFamily="@font/alata"
         android:text="Register"
         android:typeface="sans"
         android:textColor="@color/white"
@@ -105,6 +112,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/alata"
             android:text="Already have an account?" />
 
         <TextView
@@ -112,6 +120,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
+            android:fontFamily="@font/alata"
             android:text="Login"
             android:textStyle="bold" />
 

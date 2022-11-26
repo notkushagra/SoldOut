@@ -14,13 +14,13 @@
         android:id="@+id/welcome_msg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="S o l d O u t"
         android:layout_marginBottom="50dp"
+        android:fontFamily="@font/alata"
+        android:text="S o l d  O u t"
         android:textColor="@color/dark1"
-        android:textStyle="bold"
         android:textSize="50dp"
-        android:typeface="sans"
-        />
+        android:textStyle="bold"
+         />
     <EditText
         android:id="@+id/email"
         android:layout_width="match_parent"
@@ -51,10 +51,11 @@
         android:layout_marginTop="40dp"
         android:layout_marginEnd="20dp"
         android:background="@drawable/btn_bg"
+        android:fontFamily="@font/alata"
         android:text="Login"
-        android:typeface="sans"
         android:textColor="@color/white"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:typeface="sans" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -73,6 +74,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
+            android:fontFamily="@font/alata"
             android:text="Register Now"
             android:textStyle="bold" />
 
