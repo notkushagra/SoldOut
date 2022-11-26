@@ -18,7 +18,16 @@
         android:theme="@style/Theme.SoldOut"
         tools:targetApi="31">
         <activity
-            android:name=".ProductDetailsActivity"
+            android:name=".AuctionProductsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SellingProductsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AuctionProductDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SellingProductDetailsActivity"
             android:exported="false" />
         <activity
             android:name=".AddProduct"
@@ -34,7 +43,6 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

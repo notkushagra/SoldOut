@@ -26,14 +26,29 @@ public class MainActivity extends AppCompatActivity {
         final Button signOutBtn = findViewById(R.id.signOutBtn);
         signOutBtn.setOnClickListener(new handleSignOut());
 
-        final Button addProductBtn = findViewById(R.id.addProductBtn);
-        addProductBtn.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, AddProduct.class)));
+
+         final Button sellItemsBtn = findViewById(R.id.sellItemsBtn);
+        sellItemsBtn.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, SellingProductsActivity.class)) );
+         final Button auctionItemsBtn = findViewById(R.id.auctionItemsBtn);
+        auctionItemsBtn.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, AuctionProductsActivity.class)) );
+
+        final com.google.android.material.bottomnavigation.BottomNavigationItemView  addProductMenuBtn = findViewById(R.id.addProductMenuBtn);
+        addProductMenuBtn.setOnClickListener(view -> {
+            startActivity(new Intent(MainActivity.this, AddProduct.class));
+//            addProductMenuBtn.setBackgroundColor(Color.parseColor("#FFFFFF"));
+        });
+
+        final com.google.android.material.bottomnavigation.BottomNavigationItemView  homeMenuBtn = findViewById(R.id.homeMenuBtn);
+        findViewById(R.id.homeMenuBtn).setOnClickListener(view -> startActivity(new Intent(MainActivity.this, MainActivity.class)));
+
+        final com.google.android.material.bottomnavigation.BottomNavigationItemView  profileMenuBtn = findViewById(R.id.profileMenuBtn);
+//        profileMenuBtn.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, AddProduct.class)));
 
         final Button productDetailBtn = findViewById(R.id.productDetailBtn);
         productDetailBtn.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, ProductDetailsActivity.class);
+            Intent intent = new Intent(MainActivity.this, AuctionProductDetailsActivity.class);
             intent.putExtra("EXTRA_PRODUCT_ID", productId);
-//            creates an intent and puts a pair inside the intent {key:value} -> { "EXTRA_PRODUCT_ID" : productId}
+            //creates an intent and puts a pair inside the intent {key:value} -> { "EXTRA_PRODUCT_ID" : productId}
             Log.d("check ", intent.getStringExtra("EXTRA_PRODUCT_ID"));
             startActivity(intent);
         });

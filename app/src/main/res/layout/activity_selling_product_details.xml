@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AuctionProductDetailsActivity">
+
+    <TextView
+        android:id="@+id/productName"
+        android:layout_width="match_parent"
+        android:layout_height="37dp"
+        android:gravity="center"
+        android:text="@string/loading"
+        android:fontFamily="sans-serif-medium"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/cardView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.67"
+        tools:ignore="NotSibling,UnknownId" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/productDesc"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.denzcoskun.imageslider.ImageSlider
+                android:id="@+id/imageSlider"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                app:iss_corner_radius="10"
+                app:iss_title_background="@drawable/gradient" />
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
+<!--        <ImageView-->
+<!--        android:id="@+id/productImage"-->
+<!--        android:layout_width="327dp"-->
+<!--        android:layout_height="246dp"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/sellerInfo"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.528"-->
+<!--        tools:srcCompat="@drawable/adidas_shoes" />-->
+
+    <TextView
+        android:id="@+id/productDesc"
+        android:layout_width="327dp"
+        android:layout_height="76dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="12dp"
+        android:gravity="center"
+        android:text="@string/loading"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/sellerInfo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageSlider"
+        app:layout_constraintVertical_bias="0.387"
+        tools:ignore="NotSibling" />
+
+    <TextView
+        android:id="@+id/productPrice"
+        android:layout_width="411dp"
+        android:layout_height="57dp"
+        android:background="#979797"
+        android:gravity="center"
+        android:text="@string/loading"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.758" />
+
+    <TextView
+        android:id="@+id/sellerInfo"
+        android:layout_width="410dp"
+        android:layout_height="75dp"
+        android:background="#D9D9D9"
+        android:gravity="center"
+        android:text="@string/loading"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.664" />
+
+    <Button
+        android:id="@+id/bidNowBtn"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:background="@drawable/btn_bg"
+        android:gravity="center"
+        android:text="@string/bid_now"
+        android:textColor="@color/light1"
+        android:typeface="sans"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/productPrice"
+        app:layout_constraintVertical_bias="0.325"
+
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,10 +1,11 @@
 <resources>
     <string name="app_name">SoldOut</string>
     <string name="product_description">Loading</string>
-<!--    <string name="app_name">Product_page</string>-->
+    <!--    <string name="app_name">Product_page</string>-->
     <string name="seller_info"> Loading</string>
     <string name="product_price"><b>Loading</b></string>
     <string name="product_name"><b>Loading</b></string>
     <string name="loading"><b>Loading...</b></string>
     <string name="bid_now"><b>Bid Now</b></string>
+    <string name="buy_now"><b>Buy Now</b></string>
 </resources>

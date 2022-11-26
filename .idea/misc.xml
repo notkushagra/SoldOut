@@ -6,12 +6,19 @@
         <entry key="..\:/Users/31kus/AndroidStudioProjects/SoldOut/app/src/main/res/drawable/ic_background.xml" value="0.209" />
         <entry key="..\:/Users/31kus/AndroidStudioProjects/SoldOut/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
         <entry key="..\:/Users/31kus/AndroidStudioProjects/SoldOut/app/src/main/res/layout/activity_add_product.xml" value="0.264" />
+        <entry key="..\:/Users/31kus/AndroidStudioProjects/SoldOut/app/src/main/res/layout/activity_auction_product_details.xml" value="0.1762917933130699" />
+        <entry key="..\:/Users/31kus/AndroidStudioProjects/SoldOut/app/src/main/res/layout/activity_auction_products.xml" value="0.18541666666666667" />
         <entry key="..\:/Users/31kus/AndroidStudioProjects/SoldOut/app/src/main/res/layout/activity_login.xml" value="0.3625" />
         <entry key="..\:/Users/31kus/AndroidStudioProjects/SoldOut/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/Users/31kus/AndroidStudioProjects/SoldOut/app/src/main/res/layout/activity_product_details.xml" value="0.3625" />
         <entry key="..\:/Users/31kus/AndroidStudioProjects/SoldOut/app/src/main/res/layout/activity_register.xml" value="0.25" />
+        <entry key="..\:/Users/31kus/AndroidStudioProjects/SoldOut/app/src/main/res/layout/activity_selling_product_details.xml" value="0.2563405797101449" />
+        <entry key="..\:/Users/31kus/AndroidStudioProjects/SoldOut/app/src/main/res/layout/activity_selling_products.xml" value="0.3625" />
+        <entry key="..\:/Users/31kus/AndroidStudioProjects/SoldOut/app/src/main/res/layout/activity_selling_products_details.xml" value="0.18541666666666667" />
         <entry key="..\:/Users/31kus/AndroidStudioProjects/SoldOut/app/src/main/res/layout/btn_bg.xml" value="0.18541666666666667" />
         <entry key="..\:/Users/31kus/AndroidStudioProjects/SoldOut/app/src/main/res/layout/item.xml" value="0.3614583333333333" />
+        <entry key="..\:/Users/31kus/AndroidStudioProjects/SoldOut/app/src/main/res/layout/single_view.xml" value="0.1671195652173913" />
+        <entry key="..\:/Users/31kus/AndroidStudioProjects/SoldOut/app/src/main/res/menu/bottom_nav_menu.xml" value="0.3155080213903743" />
         <entry key="..\:/Users/31kus/AndroidStudioProjects/SoldOut/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1935" />
       </map>
     </option>

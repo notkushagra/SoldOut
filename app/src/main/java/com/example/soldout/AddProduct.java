@@ -52,19 +52,15 @@ public class AddProduct extends AppCompatActivity {
 
     String currentUserId;
     FirebaseStorage storage;
-    StorageReference storageRef;
     FirebaseAuth mAuth;
     FirebaseUser currentUser;
     FirebaseFirestore db;
 
     EditText productName, productDesc, productPrice;
-    ImageView imgUplaoded;
     Button addImgBtn, sellBtn, auctionBtn;
     ProgressDialog progressBar;
 
     String productNameTxt, productDescTxt, productPriceTxt, productId;
-    Uri ImageUri;
-    String ImageUrl;
     List<String> images;
     ArrayList<Uri> mImageUriArray; // contains Uri of all the images
 
@@ -77,16 +73,15 @@ public class AddProduct extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_product);
+        Log.d(TAG, "OnCreate");
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
         storage = FirebaseStorage.getInstance();
         db = FirebaseFirestore.getInstance();
-//        storageRef = storage.getReference();
 
         currentUserId = currentUser.getUid();
 
-//        imgUplaoded = findViewById(R.id.imgUplaoded);
         addImgBtn = findViewById(R.id.addImgBtn);
         sellBtn = findViewById(R.id.sellBtn);
         auctionBtn = findViewById(R.id.auctionBtn);
@@ -101,14 +96,12 @@ public class AddProduct extends AppCompatActivity {
 
         imageSlider = findViewById(R.id.imageSlider);
         slideModels = new ArrayList<>();
-        mImageUriArray = new ArrayList<Uri>();
         images = new ArrayList<>();
-        Log.d(TAG, "OnCreate");
+        mImageUriArray = new ArrayList<Uri>();
 
         addImgBtn.setOnClickListener(new handleAddImage());
         sellBtn.setOnClickListener(new handleSellBtn());
         auctionBtn.setOnClickListener(new handleAuctionBtn());
-
     }
 
     class handleAddImage implements View.OnClickListener {
@@ -138,15 +131,14 @@ public class AddProduct extends AppCompatActivity {
                         // SINGLE FILE SELECTED
                         Uri mImageUri = data.getData();
                         mImageUriArray.add(mImageUri);
-//                        imgUplaoded.setImageURI(mImageUri);
                         Log.d(TAG, "added only 1 imgUri in mImageUri");
 
-                        Cursor cursor = getContentResolver().query(mImageUri, filePathColumn, null, null, null);
-                        cursor.moveToFirst();
-
-                        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                        imageEncoded = cursor.getString(columnIndex);
-                        cursor.close();
+//                        Cursor cursor = getContentResolver().query(mImageUri, filePathColumn, null, null, null);
+//                        cursor.moveToFirst();
+//
+//                        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+//                        imageEncoded = cursor.getString(columnIndex);
+//                        cursor.close();
                     } else {
                         if (data.getClipData() != null) {
                             // MULTIPLE FILE SELECTED
@@ -158,18 +150,16 @@ public class AddProduct extends AppCompatActivity {
                                 mImageUriArray.add(uri);
                                 Log.d(TAG, "added image: " + finalI);
 
-                                // Get the cursor
-                                Cursor cursor = getContentResolver().query(uri, filePathColumn, null, null, null);
-                                // Move to first row
-                                cursor.moveToFirst();
-
-                                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                                imageEncoded = cursor.getString(columnIndex);
-                                imagesEncodedList.add(imageEncoded);
-                                cursor.close();
+//                                // Get the cursor
+//                                Cursor cursor = getContentResolver().query(uri, filePathColumn, null, null, null);
+//                                // Move to first row
+//                                cursor.moveToFirst();
+//
+//                                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+//                                imageEncoded = cursor.getString(columnIndex);
+//                                imagesEncodedList.add(imageEncoded);
+//                                cursor.close();
                             }
-
-//                            imgUplaoded.setImageURI(mImageUriArray.get(0));
                             Log.v(TAG, "Selected Images - " + mImageUriArray.size());
                         }
                     }
@@ -177,7 +167,7 @@ public class AddProduct extends AppCompatActivity {
                     Log.d(TAG, "No image pciked");
                     Toast.makeText(AddProduct.this, "Pick at least one image", Toast.LENGTH_LONG).show();
                 }
-//                        System.out.println(images.get(0));
+
                 for (int i = 0; i < mImageUriArray.size(); i++) {
                     slideModels.add(new SlideModel(mImageUriArray.get(i).toString(), ScaleTypes.CENTER_INSIDE));
                 }
@@ -209,7 +199,7 @@ public class AddProduct extends AppCompatActivity {
                 Toast.makeText(AddProduct.this, "Enter all the details", Toast.LENGTH_SHORT).show();
                 return;
             }
-            Log.d(TAG, "Product entry in auctionProducts");
+            Log.d(TAG, "SellingProduct entry in auctionProducts");
             Map<String, Object> product = new HashMap<>();
             boolean initSoldStatus = false;
             int initVisitCount = 0;
@@ -233,7 +223,7 @@ public class AddProduct extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 //setting productID to be used later
                                 productId = task.getResult().getId();
-                                Log.d(TAG, "Product added in auction products: " + productId);
+                                Log.d(TAG, "SellingProduct added in auction products: " + productId);
                                 storeProductIdInUsers("auctionProducts");
                             } else {
                                 progressBar.dismiss();
@@ -267,7 +257,7 @@ public class AddProduct extends AppCompatActivity {
             }
 
             //put product entry in
-            Log.d(TAG, "Product entry in sellingProducts");
+            Log.d(TAG, "SellingProduct entry in sellingProducts");
             Map<String, Object> product = new HashMap<>();
             boolean initSoldStatus = false;
             int initVisitCount = 0;
@@ -291,7 +281,7 @@ public class AddProduct extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 //setting productID to be used later
                                 productId = task.getResult().getId();
-                                Log.d(TAG, "Product added in selling products: " + productId);
+                                Log.d(TAG, "SellingProduct added in selling products: " + productId);
                                 storeProductIdInUsers("sellingProducts");
                             } else {
                                 progressBar.dismiss();
@@ -309,7 +299,7 @@ public class AddProduct extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    Log.d(TAG, "Added Product: " + productId + " in " + typeOfProduct + " section of user " + currentUserId);
+                    Log.d(TAG, "Added SellingProduct: " + productId + " in " + typeOfProduct + " section of user " + currentUserId);
                     storeImagesInFireStore(typeOfProduct);
                 } else {
                     progressBar.dismiss();

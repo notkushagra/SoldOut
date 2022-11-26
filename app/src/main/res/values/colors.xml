@@ -11,6 +11,6 @@
     <color name="lightgrey">#dbdbdb</color>
     <color name="light1">#F7F7F7</color>
     <color name="light2">#EEEEEE</color>
-    <color name="dark1">#393E46</color>
+    <color name="dark1">#393E46</color> //onClick
     <color name="dark2">#929AAB</color>
 </resources>

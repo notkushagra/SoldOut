@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="Home"
+        android:icon="@drawable/ic_baseline_home_24"
+        android:id="@+id/homeMenuBtn"
+        />
+    <item android:title="Add Products"
+        android:id="@+id/addProductMenuBtn"
+        android:icon="@drawable/ic_baseline_add_circle_24"/>
+    <item android:title="Profile"
+        android:id="@+id/profileMenuBtn"
+        android:icon="@drawable/ic_baseline_person_24"
+        />
+</menu>
