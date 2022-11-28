@@ -1,13 +1,18 @@
 package com.example.soldout;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -20,6 +25,29 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.homeMenuBtn:
+                        startActivity(new Intent(getApplicationContext(), LandingPageActivity.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+                    case R.id.addProductMenuBtn:
+                        startActivity(new Intent(getApplicationContext(), AddProduct.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+                    case R.id.profileMenuBtn:
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+                }
+                return false;
+            }
+        });
+
+
         mAuth = FirebaseAuth.getInstance();
 
 
@@ -27,22 +55,12 @@ public class MainActivity extends AppCompatActivity {
         signOutBtn.setOnClickListener(new handleSignOut());
 
 
-         final Button sellItemsBtn = findViewById(R.id.sellItemsBtn);
-        sellItemsBtn.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, SellingProductsActivity.class)) );
-         final Button auctionItemsBtn = findViewById(R.id.auctionItemsBtn);
-        auctionItemsBtn.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, AuctionProductsActivity.class)) );
+        final Button sellItemsBtn = findViewById(R.id.sellItemsBtn);
+        sellItemsBtn.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, SellingProductsActivity.class)));
+        final Button auctionItemsBtn = findViewById(R.id.auctionItemsBtn);
+        auctionItemsBtn.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, AuctionProductsActivity.class)));
 
-        final com.google.android.material.bottomnavigation.BottomNavigationItemView  addProductMenuBtn = findViewById(R.id.addProductMenuBtn);
-        addProductMenuBtn.setOnClickListener(view -> {
-            startActivity(new Intent(MainActivity.this, AddProduct.class));
-//            addProductMenuBtn.setBackgroundColor(Color.parseColor("#FFFFFF"));
-        });
 
-        final com.google.android.material.bottomnavigation.BottomNavigationItemView  homeMenuBtn = findViewById(R.id.homeMenuBtn);
-        findViewById(R.id.homeMenuBtn).setOnClickListener(view -> startActivity(new Intent(MainActivity.this, MainActivity.class)));
-
-        final com.google.android.material.bottomnavigation.BottomNavigationItemView  profileMenuBtn = findViewById(R.id.profileMenuBtn);
-//        profileMenuBtn.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, AddProduct.class)));
 
         final Button productDetailBtn = findViewById(R.id.productDetailBtn);
         productDetailBtn.setOnClickListener(view -> {
@@ -54,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
 
     class handleSignOut implements View.OnClickListener {
         @Override

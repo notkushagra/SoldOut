@@ -1,117 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="20dp"
     tools:context=".AddProduct">
 
-    <TextView
-        android:id="@+id/add_product_heading"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/alata"
-        android:text="What do you want to \n sell today ?"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="20dp"
-
-        />
-
-    <EditText
-        android:id="@+id/productName"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-
-        android:fontFamily="@font/alata"
-        android:hint="Enter Product Name"
-        android:inputType="text"
-        android:maxLines="1" />
-
-    <EditText
-        android:id="@+id/productDesc"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:fontFamily="@font/alata"
-        android:gravity="top|start"
-        android:hint="Enter Description"
-        android:inputType="textMultiLine"
-        android:maxLines="10" />
-
-    <EditText
-        android:id="@+id/productPrice"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-
-        android:fontFamily="@font/alata"
-        android:hint="Enter Price or Base Price"
-        android:inputType="number"
-        android:maxLines="1" />
-
-    <Button
-        android:id="@+id/addImgBtn"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="10dp"
-        android:background="@drawable/btn_bg"
-        android:drawableStart="@drawable/ic_baseline_image_24"
-        android:drawablePadding="-10dp"
-        android:fontFamily="@font/alata"
-        android:paddingLeft="20dp"
-        android:text="A d d    I m a g e"
-        android:textColor="@color/white"
-        android:textStyle="bold"
-        android:typeface="sans" />
-
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <com.denzcoskun.imageslider.ImageSlider
-            android:id="@+id/imageSlider"
+        <TextView
+            android:id="@+id/add_product_heading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/alata"
+            android:text="What do you want to \n sell today ?"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="20dp"
+
+            />
+
+        <EditText
+            android:id="@+id/productName"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+
+            android:fontFamily="@font/alata"
+            android:hint="Enter Product Name"
+            android:inputType="text"
+            android:maxLines="1" />
+
+        <EditText
+            android:id="@+id/productDesc"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            app:iss_corner_radius="10"
-            app:iss_title_background="@drawable/gradient" />
+            android:fontFamily="@font/alata"
+            android:gravity="top|start"
+            android:hint="Enter Description"
+            android:inputType="textMultiLine"
+            android:maxLines="10" />
+
+        <EditText
+            android:id="@+id/productPrice"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+
+            android:fontFamily="@font/alata"
+            android:hint="Enter Price or Base Price"
+            android:inputType="number"
+            android:maxLines="1" />
+
+        <Button
+            android:id="@+id/addImgBtn"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:background="@drawable/btn_bg"
+            android:drawableStart="@drawable/ic_baseline_image_24"
+            android:drawablePadding="-10dp"
+            android:fontFamily="@font/alata"
+            android:paddingLeft="20dp"
+            android:text="A d d    I m a g e"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:typeface="sans" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <com.denzcoskun.imageslider.ImageSlider
+                android:id="@+id/imageSlider"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                app:iss_corner_radius="10"
+                app:iss_title_background="@drawable/gradient" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/sellBtn"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/btn_bg"
+                android:fontFamily="@font/alata"
+                android:text="S e l l   i t !"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:typeface="sans" />
+
+            <Button
+                android:id="@+id/auctionBtn"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_bg"
+                android:fontFamily="@font/alata"
+                android:text="A u c t i o n   I t !"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:typeface="sans" />
+
+
+        </LinearLayout>
     </LinearLayout>
 
-
-    <LinearLayout
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/sellBtn"
-
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/btn_bg"
-            android:fontFamily="@font/alata"
-            android:text="S e l l   i t !"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            android:typeface="sans" />
-
-        <Button
-            android:id="@+id/auctionBtn"
-
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_weight="1"
-            android:background="@drawable/btn_bg"
-            android:fontFamily="@font/alata"
-            android:text="A u c t i o n   I t !"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            android:typeface="sans" />
-
-    </LinearLayout>
-
-</LinearLayout>
+        android:background="@color/lightgrey"
+        android:hapticFeedbackEnabled="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/bottom_nav_menu"
+        app:itemIconTint="@drawable/item_selector"
+        app:itemTextColor="@drawable/item_selector"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>

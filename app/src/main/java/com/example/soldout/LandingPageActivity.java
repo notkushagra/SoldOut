@@ -1,8 +1,8 @@
 package com.example.soldout;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ConcatAdapter;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -23,21 +24,25 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
-public class SellingProductsActivity extends AppCompatActivity {
-    final String TAG = "SellingProductsActivity";
+import javax.annotation.Nullable;
 
-    private RecyclerView recyclerView;
+public class LandingPageActivity extends AppCompatActivity {
+    final String TAG = "LandingPageActivity";
+
+    RecyclerView concatRecyclerView;
     RecyclerView.LayoutManager layoutManager;
-    SellingProductsRecyclerViewAdapter recyclerViewAdapter;
-    FirebaseFirestore db;
+    SellingProductsRecyclerViewAdapter sellingProductsRecyclerViewAdapter;
+    AuctionProductsRecyclerViewAdapter auctionProductsRecyclerViewAdapter;
     ArrayList<SellingProduct> sellingProductArrayList;
+    ArrayList<AuctionProduct> auctionProductArrayList;
 
+    FirebaseFirestore db;
     ProgressDialog progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_selling_products);
+        setContentView(R.layout.activity_landing_page);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
@@ -62,6 +67,7 @@ public class SellingProductsActivity extends AppCompatActivity {
         });
 
         db = FirebaseFirestore.getInstance();
+        auctionProductArrayList = new ArrayList<AuctionProduct>();
         sellingProductArrayList = new ArrayList<SellingProduct>();
 
         progressBar = new ProgressDialog(this);
@@ -69,19 +75,25 @@ public class SellingProductsActivity extends AppCompatActivity {
         progressBar.setMessage("Logging in ...");
         progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
-        recyclerView = findViewById(R.id.recyclerView);
         layoutManager = new GridLayoutManager(this, 2);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerViewAdapter = new SellingProductsRecyclerViewAdapter(this, sellingProductArrayList);
+        concatRecyclerView = findViewById(R.id.concatRecyclerView);
+        concatRecyclerView.setLayoutManager(layoutManager);
 
-        recyclerView.setAdapter(recyclerViewAdapter);
+        sellingProductsRecyclerViewAdapter = new SellingProductsRecyclerViewAdapter(this, sellingProductArrayList);
+        auctionProductsRecyclerViewAdapter = new AuctionProductsRecyclerViewAdapter(this, auctionProductArrayList);
 
-        EventChangListener();
+
+        ConcatAdapter concatAdapter = new ConcatAdapter(sellingProductsRecyclerViewAdapter, auctionProductsRecyclerViewAdapter);
+        concatRecyclerView.setAdapter(concatAdapter);
+
+
+        SellingItemIntoViewListener();
+        AuctionItemIntoViewListener();
     }
 
-    private void EventChangListener() {
 
-        db.collection("sellingProducts").orderBy("visitCount", Query.Direction.DESCENDING).
+    private void SellingItemIntoViewListener() {
+        db.collection("sellingProducts").orderBy("visitCount", Query.Direction.DESCENDING).limit(6).
                 addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -93,16 +105,41 @@ public class SellingProductsActivity extends AppCompatActivity {
                         }
                         for (DocumentChange dc : value.getDocumentChanges()) {
                             if (dc.getType() == DocumentChange.Type.ADDED) {
-                                SellingProduct sellingProduct =dc.getDocument().toObject(SellingProduct.class);
+                                SellingProduct sellingProduct = dc.getDocument().toObject(SellingProduct.class);
                                 sellingProduct.setProductId(dc.getDocument().getId());
                                 sellingProductArrayList.add(sellingProduct);
                             }
-                            recyclerViewAdapter.notifyDataSetChanged();
+                            sellingProductsRecyclerViewAdapter.notifyDataSetChanged();
                             if (progressBar.isShowing())
                                 progressBar.dismiss();
                         }
                     }
                 });
-
     }
+
+    private void AuctionItemIntoViewListener() {
+        db.collection("auctionProducts").orderBy("visitCount", Query.Direction.DESCENDING).limit(6).
+                addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        if (error != null) {
+                            if (progressBar.isShowing())
+                                progressBar.dismiss();
+                            Log.d(TAG, error.getMessage());
+                            return;
+                        }
+                        for (DocumentChange dc : value.getDocumentChanges()) {
+                            if (dc.getType() == DocumentChange.Type.ADDED) {
+                                AuctionProduct auctionProduct = dc.getDocument().toObject(AuctionProduct.class);
+                                auctionProduct.setProductId(dc.getDocument().getId());
+                                auctionProductArrayList.add(auctionProduct);
+                            }
+                            auctionProductsRecyclerViewAdapter.notifyDataSetChanged();
+                            if (progressBar.isShowing())
+                                progressBar.dismiss();
+                        }
+                    }
+                });
+    }
+
 }

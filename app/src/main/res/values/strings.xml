@@ -8,4 +8,7 @@
     <string name="loading"><b>Loading...</b></string>
     <string name="bid_now"><b>Bid Now</b></string>
     <string name="buy_now"><b>Buy Now</b></string>
+    <string name="app_title">S o l d O u t</string>
+    <string name="trending_products">Trending Products</string>
+    <string name="profile">Profile</string>
 </resources>

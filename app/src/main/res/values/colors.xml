@@ -5,9 +5,11 @@
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
 
+    <color name="pitch_black">#000000</color>
+    <color name="pitch_white">#FFFFFF</color>
     <color name="black">#1F1F1F</color>
     <color name="white">#fffafa</color>
-    <color name="darkgrey">#979797</color>
+    <color name="darkgrey">#646464</color>
     <color name="lightgrey">#dbdbdb</color>
     <color name="light1">#F7F7F7</color>
     <color name="light2">#EEEEEE</color>

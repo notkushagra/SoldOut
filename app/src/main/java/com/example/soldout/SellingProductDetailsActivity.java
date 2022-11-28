@@ -3,6 +3,7 @@ package com.example.soldout;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,7 +14,10 @@ import com.denzcoskun.imageslider.constants.ScaleTypes;
 import com.denzcoskun.imageslider.models.SlideModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -40,10 +44,32 @@ public class SellingProductDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selling_product_details);
 
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.homeMenuBtn:
+                        startActivity(new Intent(getApplicationContext(), LandingPageActivity.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+                    case R.id.addProductMenuBtn:
+                        startActivity(new Intent(getApplicationContext(), AddProduct.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+                    case R.id.profileMenuBtn:
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+                }
+                return false;
+            }
+        });
+
         //Recieve prodcutID from intent
         Intent intent = getIntent();
         productId = intent.getStringExtra("EXTRA_PRODUCT_ID");
-        Log.d(TAG,productId);
+        Log.d(TAG, productId);
 
         db = FirebaseFirestore.getInstance();
         dbUsers = FirebaseFirestore.getInstance();
@@ -53,6 +79,9 @@ public class SellingProductDetailsActivity extends AppCompatActivity {
         productPrice = findViewById(R.id.productPrice);
         sellerInfo = findViewById(R.id.sellerInfo);
         ArrayList<SlideModel> slideModels = new ArrayList<>();
+
+        //increase of visitCount by 1;
+        db.collection("sellingProducts").document(productId).update("visitCount", FieldValue.increment(1));
 
         db.collection("sellingProducts").document(productId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -94,7 +123,7 @@ public class SellingProductDetailsActivity extends AppCompatActivity {
                                     if (doc.exists()) {
                                         Map<String, Object> seller = new HashMap<>();
                                         seller = doc.getData();
-                                        final String sellerData = "Seller Info \n" + seller.get("fullname") + "\n" + seller.get("room no").toString() + "\n" + seller.get("phone").toString();
+                                        final String sellerData = "Seller Details \n" + seller.get("fullname") + "\n" + seller.get("room no").toString() + "\n" + seller.get("phone").toString();
                                         sellerInfo.setText(sellerData);
                                     } else {
                                         Log.d(TAG, "Doc does not exist");

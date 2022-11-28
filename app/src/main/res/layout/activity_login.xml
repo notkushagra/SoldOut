@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="50dp"
         android:fontFamily="@font/alata"
-        android:text="S o l d  O u t"
+        android:text="@string/app_title"
         android:textColor="@color/dark1"
         android:textSize="50dp"
         android:textStyle="bold"
