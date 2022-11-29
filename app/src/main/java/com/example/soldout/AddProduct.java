@@ -98,7 +98,7 @@ public class AddProduct extends AppCompatActivity {
                         overridePendingTransition(0, 0);
                         return true;
                     case R.id.profileMenuBtn:
-                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        startActivity(new Intent(getApplicationContext(), ProfilePage.class));
                         overridePendingTransition(0, 0);
                         return true;
                 }
@@ -224,7 +224,7 @@ public class AddProduct extends AppCompatActivity {
             productHoursNum = Long.valueOf(productTime.getText().toString());
             Long num = Long.valueOf(1000 * 60 * 60);
             Long start = System.currentTimeMillis();
-            productTimeFinal = new Timestamp(start+(num*productHoursNum));
+            productTimeFinal = new Timestamp(start + (num * productHoursNum));
 
             if (mImageUriArray == null || mImageUriArray.size() == 0) {
                 progressBar.dismiss();

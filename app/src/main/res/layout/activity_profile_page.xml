@@ -6,242 +6,157 @@
     android:layout_height="match_parent"
     tools:context=".ProfilePage">
 
-    <EditText
-        android:id="@+id/editUserName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/figmagrey"
-        android:ems="10"
-        android:hint="@string/name"
-        android:inputType="textPersonName"
-        android:minHeight="48dp"
-        android:textColorHint="#546E7A"
-        app:layout_constraintBottom_toTopOf="@+id/roomNo"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/userName"
-        app:layout_constraintVertical_bias="0.625" />
-
-    <EditText
-        android:id="@+id/phoneNo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:hint="@string/phone_no"
-        android:inputType="textPersonName"
-        android:background="@color/figmagrey"
-        android:minHeight="48dp"
-        android:textColorHint="#546E7A"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/roomNo"/>
-
-    <EditText
-        android:id="@+id/roomNo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="72dp"
-        android:background="@color/figmagrey"
-        android:ems="10"
-        android:hint="@string/room_no"
-        android:inputType="textPersonName"
-        android:minHeight="48dp"
-        android:textColorHint="#546E7A"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/userName" />
-
-    <TextView
-        android:id="@+id/userName"
-        android:layout_width="411dp"
-        android:layout_height="31dp"
-        android:paddingStart="20dp"
-        android:paddingEnd="0dp"
-        android:text="@string/hey_john"
-        android:background="@color/figmagrey"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.022"
-        android:gravity="center"/>
-
-<!--    <ScrollView-->
-<!--        android:id="@+id/notifications"-->
-<!--        android:layout_width="411dp"-->
-<!--        android:layout_height="152dp"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHorizontal_bias="0.0"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:layout_constraintVertical_bias="0.117"-->
-<!--        android:background="@drawable/border">-->
-
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="vertical"-->
-<!--            android:layout_marginTop="0dp"-->
-<!--            >-->
-
-<!--            <TextView-->
-<!--                android:id="@+id/notificationsText"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="31dp"-->
-<!--                android:background="#EDEDED"-->
-<!--                android:paddingStart="0dp"-->
-<!--                android:paddingEnd="0dp"-->
-<!--                android:text="@string/notifications"-->
-<!--                android:textAlignment="textStart"-->
-<!--                app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintHorizontal_bias="0.0"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toTopOf="parent"-->
-<!--                app:layout_constraintVertical_bias="0.052" />-->
-
-<!--            <TextView-->
-<!--                android:id="@+id/notificationsEg1"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="31dp"-->
-<!--                android:background="#979797"-->
-<!--                android:paddingStart="20dp"-->
-<!--                android:paddingEnd="0dp"-->
-<!--                android:text="@string/airpods"-->
-<!--                android:textAlignment="textStart"-->
-<!--                app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintHorizontal_bias="0.0"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toTopOf="parent"-->
-<!--                app:layout_constraintVertical_bias="0.052" />-->
-
-<!--            <TextView-->
-<!--                android:id="@+id/notificationsEg2"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="31dp"-->
-<!--                android:background="#EDEDED"-->
-<!--                android:paddingStart="20dp"-->
-<!--                android:paddingEnd="0dp"-->
-<!--                android:text="@string/adidasOzeliya"-->
-<!--                android:textAlignment="textStart"-->
-<!--                app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintHorizontal_bias="0.0"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toTopOf="parent"-->
-<!--                app:layout_constraintVertical_bias="0.052" />-->
-
-<!--            <TextView-->
-<!--                android:id="@+id/notificationsEg3"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="31dp"-->
-<!--                android:background="#979797"-->
-<!--                android:paddingStart="20dp"-->
-<!--                android:paddingEnd="0dp"-->
-<!--                android:text="@string/S20"-->
-<!--                android:textAlignment="textStart"-->
-<!--                app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintHorizontal_bias="0.0"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toTopOf="parent"-->
-<!--                app:layout_constraintVertical_bias="0.052" />-->
-
-<!--            <TextView-->
-<!--                android:id="@+id/notificationsEg4"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="31dp"-->
-<!--                android:background="#EDEDED"-->
-<!--                android:paddingStart="20dp"-->
-<!--                android:paddingEnd="0dp"-->
-<!--                android:text="@string/bottle"-->
-<!--                android:textAlignment="textStart"-->
-<!--                app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintHorizontal_bias="0.0"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toTopOf="parent"-->
-<!--                app:layout_constraintVertical_bias="0.052" />-->
-
-<!--        </LinearLayout>-->
-<!--    </ScrollView>-->
-
-    <TextView
-        android:id="@+id/yourBids"
-        android:layout_marginTop="40dp"
-        android:layout_width="411dp"
-        android:layout_height="31dp"
-        android:gravity="center"
-        android:paddingStart="20dp"
-        android:paddingEnd="0dp"
-        android:text="@string/your_bids"
-        android:background="@color/figmagrey"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.314" />
-
-    <HorizontalScrollView
+    <LinearLayout
+        android:id="@+id/masterLL"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/yourBids"
-        app:layout_constraintVertical_bias="0.0"
-        android:scrollbars="none">
+        android:layout_height="0dp"
+        android:orientation="vertical"
+
+        android:padding="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:fontFamily="@font/alata"
+            android:text="@string/hey_there"
+            android:textColor="@color/pitch_black"
+            android:textSize="40dp" />
+
+        <EditText
+            android:id="@+id/editUserName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@color/lightgrey"
+            android:elegantTextHeight="true"
+            android:fontFamily="@font/alata"
+            android:hint="@string/name"
+            android:padding="10dp"
+            android:singleLine="true" />
+
+
+        <EditText
+            android:id="@+id/roomNo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@color/lightgrey"
+            android:elegantTextHeight="true"
+            android:fontFamily="@font/alata"
+            android:hint="@string/room_no"
+            android:padding="10dp"
+            android:singleLine="true" />
+
+
+        <EditText
+            android:id="@+id/phoneNo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@color/lightgrey"
+            android:elegantTextHeight="true"
+            android:fontFamily="@font/alata"
+            android:hint="@string/phone_no"
+            android:inputType="phone"
+            android:padding="10dp" />
+
+
+        <TextView
+            android:id="@+id/yourBids"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:fontFamily="@font/alata"
+            android:text="@string/your_bids"
+            android:textSize="20dp" />
+
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:scrollbars="horizontal">
+
+            <LinearLayout
+                android:id="@+id/myBids"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="horizontal" />
+        </HorizontalScrollView>
+
+        <TextView
+            android:id="@+id/yourProducts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:fontFamily="@font/alata"
+            android:text="@string/your_products"
+            android:textSize="20dp" />
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/myProducts"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal" />
+        </HorizontalScrollView>
 
         <LinearLayout
-            android:id="@+id/myBids"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:gravity="center"/>
-    </HorizontalScrollView>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/yourProducts"
-        android:layout_marginTop="80dp"
-        android:layout_width="411dp"
-        android:layout_height="31dp"
-        android:gravity="center"
-        android:paddingStart="20dp"
-        android:paddingEnd="0dp"
-        android:text="@string/your_products"
-        android:background="@color/figmagrey"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.542" />
+            <Button
+                android:id="@+id/addProductBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/btn_bg"
+                android:fontFamily="@font/alata"
+                android:text="A d d   P r o d u c t"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:typeface="sans" />
 
-    <HorizontalScrollView
+            <Button
+                android:id="@+id/signOutBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_bg"
+                android:fontFamily="@font/alata"
+                android:text="S i g n   O u t"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:typeface="sans" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="wrap_content"
+        android:background="@color/lightgrey"
+        android:hapticFeedbackEnabled="true"
+        app:layout_constraintTop_toBottomOf="@id/masterLL"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/yourProducts"
-        app:layout_constraintVertical_bias="0.0"
-        android:scrollbars="none">
-
-        <LinearLayout
-            android:id="@+id/myProducts"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="horizontal" />
-    </HorizontalScrollView>
-
+        app:menu="@menu/bottom_nav_menu"
+        app:itemIconTint="@drawable/item_selector"
+        app:itemTextColor="@drawable/item_selector"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

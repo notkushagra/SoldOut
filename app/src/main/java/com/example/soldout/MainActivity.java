@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
                         overridePendingTransition(0, 0);
                         return true;
                     case R.id.profileMenuBtn:
-                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        startActivity(new Intent(getApplicationContext(), ProfilePage.class));
                         overridePendingTransition(0, 0);
                         return true;
                 }

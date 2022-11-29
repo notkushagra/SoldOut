@@ -1,13 +1,18 @@
 package com.example.soldout;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -35,6 +40,28 @@ public class AuctionProductsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auction_products);
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.homeMenuBtn:
+                        startActivity(new Intent(getApplicationContext(), LandingPageActivity.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+                    case R.id.addProductMenuBtn:
+                        startActivity(new Intent(getApplicationContext(), AddProduct.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+                    case R.id.profileMenuBtn:
+                        startActivity(new Intent(getApplicationContext(), ProfilePage.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+                }
+                return false;
+            }
+        });
 
         db = FirebaseFirestore.getInstance();
         auctionProductArrayList = new ArrayList<AuctionProduct>();

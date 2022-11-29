@@ -10,10 +10,12 @@
     tools:context=".SellingProductsActivity">
 
     <LinearLayout
+        android:id="@+id/masterLL"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:orientation="vertical"
         android:padding="20dp"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
@@ -34,6 +36,17 @@
             android:layout_height="match_parent"
             android:scrollbars="vertical" />
     </LinearLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/lightgrey"
+        android:hapticFeedbackEnabled="true"
+        app:itemIconTint="@drawable/item_selector"
+        app:itemTextColor="@drawable/item_selector"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/bottom_nav_menu" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
