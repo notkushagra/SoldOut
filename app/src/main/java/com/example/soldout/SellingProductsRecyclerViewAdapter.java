@@ -44,12 +44,18 @@ public class SellingProductsRecyclerViewAdapter extends RecyclerView.Adapter<Sel
                     .load(sellingProduct.images.get(0))
                     .into(holder.imageView);
         }
+
         String name=sellingProduct.name.toString();
         Log.d(TAG,String.valueOf(name.length()));
         if (name.length()>14)
             holder.textView1.setText("" + (sellingProduct.name).toString().substring(0,13));
         else
             holder.textView1.setText("" + (sellingProduct.name).toString());
+        if(sellingProduct.soldStatus){
+            holder.textView2.setText("SOLD OUT!");
+
+        }
+        else
         holder.textView2.setText("" + (sellingProduct.price).toString());
 
     }

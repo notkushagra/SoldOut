@@ -1,10 +1,22 @@
 package com.example.soldout;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,6 +50,7 @@ public class SellingProductDetailsActivity extends AppCompatActivity {
     TextView productPrice;
     TextView sellerInfo;
     String productId;
+    Button bidNowBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,10 +91,42 @@ public class SellingProductDetailsActivity extends AppCompatActivity {
         productName = findViewById(R.id.productName);
         productPrice = findViewById(R.id.productPrice);
         sellerInfo = findViewById(R.id.sellerInfo);
+        bidNowBtn = findViewById(R.id.bidNowBtn);
+
         ArrayList<SlideModel> slideModels = new ArrayList<>();
 
         //increase of visitCount by 1;
         db.collection("sellingProducts").document(productId).update("visitCount", FieldValue.increment(1));
+
+        bidNowBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                db.collection("sellingProducts").document(productId).update("soldStatus", true);
+                // inflate the layout of the popup window
+                LayoutInflater inflater = (LayoutInflater)
+                        getSystemService(LAYOUT_INFLATER_SERVICE);
+                View popupView = inflater.inflate(R.layout.popup_window, null);
+
+                // create the popup window
+                int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+                int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+                boolean focusable = true; // lets taps outside the popup also dismiss it
+                final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+
+                // show the popup window
+                // which view you pass in doesn't matter, it is only used for the window tolken
+                popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+
+                // dismiss the popup window when touched
+                popupView.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        popupWindow.dismiss();
+                        return true;
+                    }
+                });
+            }
+        });
 
         db.collection("sellingProducts").document(productId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -93,6 +138,7 @@ public class SellingProductDetailsActivity extends AppCompatActivity {
                         product = doc.getData();
                         final String productDescTxt = product.get("desc").toString();
                         final String productTitle = product.get("name").toString();
+                        final boolean soldStatus = (boolean) product.get("soldStatus");
 
                         List<String> images = (List<String>) product.get("images");
 
@@ -107,7 +153,18 @@ public class SellingProductDetailsActivity extends AppCompatActivity {
 
                         String bidTag = (String) product.get("price");
                         String productPriceTxt;
-                        if (bidTag != null) {
+
+                        if(soldStatus){
+                            productPriceTxt = "SOLD OUT!";
+                            Context context = getApplicationContext();
+                            CharSequence text = "Item has been sold";
+                            int duration = Toast.LENGTH_SHORT;
+                            Toast toast = Toast.makeText(context, text, duration);
+                            toast.show();
+                            bidNowBtn.getBackground().setAlpha(128);
+                            bidNowBtn.setClickable(false);
+                        }
+                        else if (bidTag != null) {
                             productPriceTxt = "Rs. " + bidTag;
                         } else {
                             productPriceTxt = "No Bids Yet";

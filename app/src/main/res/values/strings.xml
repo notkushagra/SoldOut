@@ -11,4 +11,18 @@
     <string name="app_title">S o l d O u t</string>
     <string name="trending_products">Trending Products</string>
     <string name="profile">Profile</string>
+    <string name="notifications"><b>Notifications</b></string>
+    <string name="airpods">Victor Brown has bid for your Airpods for Rs. 7999</string>
+    <string name="adidasOzeliya">Your bid for Adidas Ozeliya has been outbid by Alex</string>
+    <string name="poeTextbook">Your POE Textbook was sold to Chris Brown for Rs. 7999</string>
+    <string name="S20">Your S20 was sold to Brown Munde for Rs. 10999</string>
+    <string name="bottle">Your bottle was sold to Joe for Rs. 799</string>
+    <string name="your_bids"><b>Your Bids</b></string>
+    <string name="hey_john"><b>Hey John!</b></string>
+    <string name="your_products"><b>Your Products</b></string>
+    <string name="phone_no">Phone No.</string>
+    <string name="room_no">Room No.</string>
+    <string name="name">Name</string>
+    <string name="a_d_d_i_m_a_g_e">A d d    I m a g e</string>
+    <string name="a_d_d_time">A d d    T i m e</string>
 </resources>

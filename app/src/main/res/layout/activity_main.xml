@@ -55,6 +55,12 @@
             android:layout_height="wrap_content"
             android:text="LandingPage" />
 
+        <Button
+            android:id="@+id/profilePageBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Profile Page" />
+
 
     </LinearLayout>
 

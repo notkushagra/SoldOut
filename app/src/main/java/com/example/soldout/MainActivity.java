@@ -71,6 +71,15 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        final Button profilePageBtn = findViewById(R.id.profilePageBtn);
+        profilePageBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, ProfilePage.class);
+           //intent.putExtra("EXTRA_USER_ID", user);
+            //creates an intent and puts a pair inside the intent {key:value} -> { "EXTRA_PRODUCT_ID" : productId}
+            //Log.d("check ", intent.getStringExtra("EXTRA_PRODUCT_ID"));
+            startActivity(intent);
+        });
+
     }
 
 

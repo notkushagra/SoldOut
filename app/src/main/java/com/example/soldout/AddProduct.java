@@ -19,8 +19,10 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -37,6 +39,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -59,11 +62,13 @@ public class AddProduct extends AppCompatActivity {
     FirebaseUser currentUser;
     FirebaseFirestore db;
 
-    EditText productName, productDesc, productPrice;
+    EditText productName, productDesc, productPrice, productTime;
     Button addImgBtn, sellBtn, auctionBtn;
     ProgressDialog progressBar;
 
     String productNameTxt, productDescTxt, productPriceTxt, productId;
+    Long productHoursNum;
+    Timestamp productTimeFinal;
     List<String> images;
     ArrayList<Uri> mImageUriArray; // contains Uri of all the images
 
@@ -114,6 +119,7 @@ public class AddProduct extends AppCompatActivity {
         productDesc = findViewById(R.id.productDesc);
         productName = findViewById(R.id.productName);
         productPrice = findViewById(R.id.productPrice);
+        productTime = findViewById(R.id.addHoursTxt);
 
         progressBar = new ProgressDialog(this);
         progressBar.setCancelable(true);//you can cancel it by pressing back button
@@ -190,7 +196,7 @@ public class AddProduct extends AppCompatActivity {
                         }
                     }
                 } else {
-                    Log.d(TAG, "No image pciked");
+                    Log.d(TAG, "No image picked");
                     Toast.makeText(AddProduct.this, "Pick at least one image", Toast.LENGTH_LONG).show();
                 }
 
@@ -215,17 +221,21 @@ public class AddProduct extends AppCompatActivity {
             productNameTxt = productName.getText().toString();
             productDescTxt = productDesc.getText().toString();
             productPriceTxt = productPrice.getText().toString();
+            productHoursNum = Long.valueOf(productTime.getText().toString());
+            Long num = Long.valueOf(1000 * 60 * 60);
+            Long start = System.currentTimeMillis();
+            productTimeFinal = new Timestamp(start+(num*productHoursNum));
 
             if (mImageUriArray == null || mImageUriArray.size() == 0) {
                 progressBar.dismiss();
                 Toast.makeText(AddProduct.this, "Attach at least one image", Toast.LENGTH_SHORT).show();
                 return;
-            } else if (productNameTxt.trim().equals("") || productDescTxt.trim().equals("") || productPriceTxt.trim().equals("")) {
+            } else if (productNameTxt.trim().equals("") || productDescTxt.trim().equals("") || productPriceTxt.trim().equals("") || productTime.getText().toString().trim().equals("")) {
                 progressBar.dismiss();
                 Toast.makeText(AddProduct.this, "Enter all the details", Toast.LENGTH_SHORT).show();
                 return;
             }
-            Log.d(TAG, "SellingProduct entry in auctionProducts");
+            Log.d(TAG, "Product entry in auctionProducts");
             Map<String, Object> product = new HashMap<>();
             boolean initSoldStatus = false;
             int initVisitCount = 0;
@@ -241,6 +251,7 @@ public class AddProduct extends AppCompatActivity {
             product.put("visitCount", initVisitCount);
             product.put("tags", tags);
             product.put("images", images);
+            product.put("expiryTime", productTimeFinal);
 
             db.collection("auctionProducts")
                     .add(product).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
