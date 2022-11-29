@@ -84,7 +84,7 @@
 
 
         <Button
-            android:id="@+id/bidNowBtn"
+            android:id="@+id/buyNowBtn"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_margin="50dp"

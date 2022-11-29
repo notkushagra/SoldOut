@@ -66,7 +66,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:fontFamily="@font/alata"
-            android:hint="Enter Hours"
+            android:hint="Enter Hours (Only needed for Auction)"
             android:inputType="number"
             android:maxLines="1" />
 
@@ -81,7 +81,7 @@
             android:drawablePadding="-10dp"
             android:fontFamily="@font/alata"
             android:paddingLeft="20dp"
-            android:text="@string/a_d_d_i_m_a_g_e"
+            android:text="A D D   I M A G E"
             android:textColor="@color/white"
             android:textStyle="bold"
             android:typeface="sans" />

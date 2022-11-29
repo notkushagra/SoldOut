@@ -50,7 +50,7 @@ public class SellingProductDetailsActivity extends AppCompatActivity {
     TextView productPrice;
     TextView sellerInfo;
     String productId;
-    Button bidNowBtn;
+    Button buyNowBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,14 +91,14 @@ public class SellingProductDetailsActivity extends AppCompatActivity {
         productName = findViewById(R.id.productName);
         productPrice = findViewById(R.id.productPrice);
         sellerInfo = findViewById(R.id.sellerInfo);
-        bidNowBtn = findViewById(R.id.bidNowBtn);
+        buyNowBtn = findViewById(R.id.buyNowBtn);
 
         ArrayList<SlideModel> slideModels = new ArrayList<>();
 
         //increase of visitCount by 1;
         db.collection("sellingProducts").document(productId).update("visitCount", FieldValue.increment(1));
 
-        bidNowBtn.setOnClickListener(new View.OnClickListener() {
+        buyNowBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 db.collection("sellingProducts").document(productId).update("soldStatus", true);
@@ -122,9 +122,12 @@ public class SellingProductDetailsActivity extends AppCompatActivity {
                     @Override
                     public boolean onTouch(View v, MotionEvent event) {
                         popupWindow.dismiss();
+                        finish();
+                        startActivity(getIntent());
                         return true;
                     }
                 });
+
             }
         });
 
@@ -154,17 +157,16 @@ public class SellingProductDetailsActivity extends AppCompatActivity {
                         String bidTag = (String) product.get("price");
                         String productPriceTxt;
 
-                        if(soldStatus){
+                        if (soldStatus) {
                             productPriceTxt = "SOLD OUT!";
                             Context context = getApplicationContext();
                             CharSequence text = "Item has been sold";
                             int duration = Toast.LENGTH_SHORT;
                             Toast toast = Toast.makeText(context, text, duration);
                             toast.show();
-                            bidNowBtn.getBackground().setAlpha(128);
-                            bidNowBtn.setClickable(false);
-                        }
-                        else if (bidTag != null) {
+                            buyNowBtn.getBackground().setAlpha(128);
+                            buyNowBtn.setClickable(false);
+                        } else if (bidTag != null) {
                             productPriceTxt = "Rs. " + bidTag;
                         } else {
                             productPriceTxt = "No Bids Yet";

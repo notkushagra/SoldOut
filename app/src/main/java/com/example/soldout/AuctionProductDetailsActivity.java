@@ -177,7 +177,7 @@ public class AuctionProductDetailsActivity extends AppCompatActivity {
                                 else
                                     if((Integer.parseInt(placeBid.getText().toString()) <= (Integer.parseInt(bidTag)))){
                                         Context context = getApplicationContext();
-                                        CharSequence text = "New Bid Amount should be greater than equal to Current Bid Amount";
+                                        CharSequence text = "New Bid Amount should be greater than Current Bid Amount";
                                         int duration = Toast.LENGTH_SHORT;
                                         Toast toast = Toast.makeText(context, text, duration);
                                         toast.show();
@@ -205,6 +205,8 @@ public class AuctionProductDetailsActivity extends AppCompatActivity {
                                         @Override
                                         public boolean onTouch(View v, MotionEvent event) {
                                             popupWindow.dismiss();
+                                            finish();
+                                            startActivity(getIntent());
                                             return true;
                                         }
                                     });

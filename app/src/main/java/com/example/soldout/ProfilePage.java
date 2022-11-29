@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -37,6 +38,8 @@ public class ProfilePage extends AppCompatActivity {
     EditText phoneNumber;
     EditText roomNo;
 
+    Button addProductBtn, signOutBtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,9 +51,27 @@ public class ProfilePage extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         userId = currentUser.getUid();
         db = FirebaseFirestore.getInstance();
+
         phoneNumber = findViewById(R.id.phoneNo);
         roomNo = findViewById(R.id.roomNo);
         editUserName = findViewById(R.id.editUserName);
+        addProductBtn = findViewById(R.id.addProductBtn);
+        signOutBtn = findViewById(R.id.signOutBtn);
+
+        signOutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(getApplicationContext(), LandingPageActivity.class));;
+                onStart();
+            }
+        });
+        addProductBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), AddProduct.class));
+            }
+        });
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setSelectedItemId(R.id.profileMenuBtn);

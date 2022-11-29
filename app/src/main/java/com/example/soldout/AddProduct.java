@@ -221,10 +221,7 @@ public class AddProduct extends AppCompatActivity {
             productNameTxt = productName.getText().toString();
             productDescTxt = productDesc.getText().toString();
             productPriceTxt = productPrice.getText().toString();
-            productHoursNum = Long.valueOf(productTime.getText().toString());
-            Long num = Long.valueOf(1000 * 60 * 60);
-            Long start = System.currentTimeMillis();
-            productTimeFinal = new Timestamp(start + (num * productHoursNum));
+
 
             if (mImageUriArray == null || mImageUriArray.size() == 0) {
                 progressBar.dismiss();
@@ -236,6 +233,12 @@ public class AddProduct extends AppCompatActivity {
                 return;
             }
             Log.d(TAG, "Product entry in auctionProducts");
+
+            productHoursNum = Long.valueOf(productTime.getText().toString());
+            Long num = Long.valueOf(1000 * 60 * 60);
+            Long start = System.currentTimeMillis();
+            productTimeFinal = new Timestamp(start + (num * productHoursNum));
+
             Map<String, Object> product = new HashMap<>();
             boolean initSoldStatus = false;
             int initVisitCount = 0;
