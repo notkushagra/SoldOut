@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -122,8 +123,10 @@ public class ProfilePage extends AppCompatActivity {
                                             Map<String, Object> product = new HashMap<>();
                                             product = doc.getData();
                                             List<String> image = (List<String>) product.get("images");
-                                            sellingProductsURIs.add(image.get(0));
-
+                                            if (!image.isEmpty())
+                                                sellingProductsURIs.add(image.get(0));
+                                            else
+                                                Toast.makeText(ProfilePage.this, "Some products might not have any pictures", Toast.LENGTH_SHORT).show();
                                         }
                                         for (int i = 0; i < sellingProductsURIs.size(); i++) {
                                             View view = inflater.inflate(R.layout.item, myProducts, false);

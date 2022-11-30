@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -45,6 +46,7 @@ public class LandingPageActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseFirestore db;
     ProgressDialog progressBar;
+    SearchView searchBar;
 
 
     @Override
@@ -71,6 +73,25 @@ public class LandingPageActivity extends AppCompatActivity {
             return false;
         });
 
+        searchBar = findViewById(R.id.searchBar);
+        searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                Log.d(TAG,"Search entered");
+                String q= searchBar.getQuery().toString();
+                Log.d(TAG,"Query entered: "+ q);
+                Intent intent = new Intent(getApplicationContext(),SearchResultActivity.class);
+                intent.putExtra("query",q);
+                startActivity(intent);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
+            }
+        });
+
         itemsForAuctionBtn = findViewById(R.id.itemsForAuctionBtn);
         itemsForSaleBtn = findViewById(R.id.itemsForSaleBtn);
 
@@ -95,7 +116,7 @@ public class LandingPageActivity extends AppCompatActivity {
 
         progressBar = new ProgressDialog(this);
         progressBar.setCancelable(true);//you can cancel it by pressing back button
-        progressBar.setMessage("Logging in ...");
+        progressBar.setMessage("Loading ...");
         progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         layoutManager = new GridLayoutManager(this, 2);
@@ -114,9 +135,8 @@ public class LandingPageActivity extends AppCompatActivity {
         AuctionItemIntoViewListener();
     }
 
-
     private void SellingItemIntoViewListener() {
-        db.collection("sellingProducts").orderBy("visitCount", Query.Direction.DESCENDING).limit(6).
+        db.collection("sellingProducts").orderBy("visitCount", Query.Direction.DESCENDING).limit(4).
                 addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -141,7 +161,7 @@ public class LandingPageActivity extends AppCompatActivity {
     }
 
     private void AuctionItemIntoViewListener() {
-        db.collection("auctionProducts").orderBy("visitCount", Query.Direction.DESCENDING).limit(6).
+        db.collection("auctionProducts").orderBy("visitCount", Query.Direction.DESCENDING).limit(4).
                 addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {

@@ -245,6 +245,11 @@ public class AddProduct extends AppCompatActivity {
             List<String> tags = new ArrayList<>();
             List<String> images = new ArrayList<>();
 
+            //putting keywords in products
+            List<String> keywords = new ArrayList<>();
+            keywords = generateKeywords(productNameTxt);
+            product.put("keywords",keywords);
+
             product.put("name", productNameTxt);
             product.put("desc", productDescTxt);
             product.put("price", productPriceTxt);
@@ -303,6 +308,10 @@ public class AddProduct extends AppCompatActivity {
             int initVisitCount = 0;
             List<String> tags = new ArrayList<>();
             List<String> images = new ArrayList<>();
+
+            List<String> keywords = new ArrayList<>();
+            keywords = generateKeywords(productNameTxt);
+            product.put("keywords",keywords);
 
             product.put("name", productNameTxt);
             product.put("desc", productDescTxt);
@@ -403,6 +412,21 @@ public class AddProduct extends AppCompatActivity {
         }
         progressBar.dismiss();
         Toast.makeText(AddProduct.this, "Image upload may take some time", Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(AddProduct.this, MainActivity.class));
+        startActivity(new Intent(AddProduct.this, LandingPageActivity.class));
+    }
+
+    public List<String> generateKeywords(String name){
+        List<String> keywords =  new ArrayList<>();
+        name = name.replaceAll(" ", "");
+        name=name.trim().toLowerCase(Locale.ROOT);
+        Log.d(TAG,name);
+        Log.d(TAG,String.valueOf(name.length()));
+
+        for (int i = 0; i < name.length(); i++) {
+            for(int j = i; j < name.length(); j++){
+                keywords.add(name.substring(i,j+1));
+            }
+        }
+        return keywords;
     }
 }
