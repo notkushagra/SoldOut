@@ -24,4 +24,25 @@
     <string name="room_no">Room No.</string>
     <string name="name">Name</string>
     <string name="a_d_d_time">A d d    T i m e</string>
+    <string-array name="tags">
+        <item>
+            <string name="all">All</string>
+        </item>
+        <item>
+            <string name="electronics">Electronics</string>
+        </item>
+        <item>
+            <string name="clothing">Clothing</string>
+        </item>
+        <item>
+            <string name="utilities">Utilities</string>
+        </item>
+        <item>
+            <string name="books">Books</string>
+        </item>
+        <item>
+            <string name="others">Others</string>
+        </item>
+
+    </string-array>
 </resources>

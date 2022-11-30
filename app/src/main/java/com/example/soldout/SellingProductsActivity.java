@@ -11,7 +11,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Spinner;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.firestore.DocumentChange;
@@ -19,9 +25,11 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class SellingProductsActivity extends AppCompatActivity {
     final String TAG = "SellingProductsActivity";
@@ -32,6 +40,7 @@ public class SellingProductsActivity extends AppCompatActivity {
     FirebaseFirestore db;
     ArrayList<SellingProduct> sellingProductArrayList;
 
+    Spinner spinnerTags;
     ProgressDialog progressBar;
 
     @Override
@@ -76,9 +85,47 @@ public class SellingProductsActivity extends AppCompatActivity {
 
         recyclerView.setAdapter(recyclerViewAdapter);
 
-        EventChangListener();
-    }
+        spinnerTags = findViewById(R.id.spinnerTags);
+        spinnerTags.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.d(TAG, "Inside onItemSelected");
+                String queryTag = adapterView.getItemAtPosition(i).toString();
+                Log.d(TAG, "QUERY Tag: " + queryTag);
+                queryTag=queryTag.trim().toLowerCase(Locale.ROOT);
+                Log.d(TAG, "QUERY Tag after trim: " + queryTag);
+                sellingProductArrayList.clear();
+                db.collection("sellingProducts").whereArrayContains("tags", queryTag).get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    Log.d(TAG, "task is successful: " + task.getResult().toString());
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                        Log.d(TAG, document.getId() + " => " + document.getData());
+                                        SellingProduct sellingProduct = document.toObject(SellingProduct.class);
+                                        sellingProduct.setProductId(document.getId());
+                                        sellingProductArrayList.add(sellingProduct);
+                                    }
+                                    recyclerViewAdapter.notifyDataSetChanged();
+                                    if (progressBar.isShowing())
+                                        progressBar.dismiss();
+                                } else {
+                                    Log.d(TAG, task.getException().getMessage());
+                                    Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                EventChangListener();
+                return;
+            }
+        });
+    }
+    //may become useless but still there in case of outliers
     private void EventChangListener() {
 
         db.collection("sellingProducts").orderBy("visitCount", Query.Direction.DESCENDING).

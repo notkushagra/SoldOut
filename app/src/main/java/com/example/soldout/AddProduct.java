@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,6 +66,7 @@ public class AddProduct extends AppCompatActivity {
     EditText productName, productDesc, productPrice, productTime;
     Button addImgBtn, sellBtn, auctionBtn;
     ProgressDialog progressBar;
+    Spinner spinnerTags;
 
     String productNameTxt, productDescTxt, productPriceTxt, productId;
     Long productHoursNum;
@@ -120,6 +122,7 @@ public class AddProduct extends AppCompatActivity {
         productName = findViewById(R.id.productName);
         productPrice = findViewById(R.id.productPrice);
         productTime = findViewById(R.id.addHoursTxt);
+        spinnerTags = findViewById(R.id.spinnerTags);
 
         progressBar = new ProgressDialog(this);
         progressBar.setCancelable(true);//you can cancel it by pressing back button
@@ -165,12 +168,6 @@ public class AddProduct extends AppCompatActivity {
                         mImageUriArray.add(mImageUri);
                         Log.d(TAG, "added only 1 imgUri in mImageUri");
 
-//                        Cursor cursor = getContentResolver().query(mImageUri, filePathColumn, null, null, null);
-//                        cursor.moveToFirst();
-//
-//                        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-//                        imageEncoded = cursor.getString(columnIndex);
-//                        cursor.close();
                     } else {
                         if (data.getClipData() != null) {
                             // MULTIPLE FILE SELECTED
@@ -182,15 +179,6 @@ public class AddProduct extends AppCompatActivity {
                                 mImageUriArray.add(uri);
                                 Log.d(TAG, "added image: " + finalI);
 
-//                                // Get the cursor
-//                                Cursor cursor = getContentResolver().query(uri, filePathColumn, null, null, null);
-//                                // Move to first row
-//                                cursor.moveToFirst();
-//
-//                                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-//                                imageEncoded = cursor.getString(columnIndex);
-//                                imagesEncodedList.add(imageEncoded);
-//                                cursor.close();
                             }
                             Log.v(TAG, "Selected Images - " + mImageUriArray.size());
                         }
@@ -244,11 +232,12 @@ public class AddProduct extends AppCompatActivity {
             int initVisitCount = 0;
             List<String> tags = new ArrayList<>();
             List<String> images = new ArrayList<>();
-
+            tags.add("all");
+            tags.add(spinnerTags.getSelectedItem().toString().toLowerCase(Locale.ROOT));
             //putting keywords in products
             List<String> keywords = new ArrayList<>();
             keywords = generateKeywords(productNameTxt);
-            product.put("keywords",keywords);
+            product.put("keywords", keywords);
 
             product.put("name", productNameTxt);
             product.put("desc", productDescTxt);
@@ -308,10 +297,13 @@ public class AddProduct extends AppCompatActivity {
             int initVisitCount = 0;
             List<String> tags = new ArrayList<>();
             List<String> images = new ArrayList<>();
+            tags.add("all");
+            tags.add(spinnerTags.getSelectedItem().toString().toLowerCase(Locale.ROOT));
 
+            //putting keywords in products
             List<String> keywords = new ArrayList<>();
             keywords = generateKeywords(productNameTxt);
-            product.put("keywords",keywords);
+            product.put("keywords", keywords);
 
             product.put("name", productNameTxt);
             product.put("desc", productDescTxt);
@@ -415,16 +407,16 @@ public class AddProduct extends AppCompatActivity {
         startActivity(new Intent(AddProduct.this, LandingPageActivity.class));
     }
 
-    public List<String> generateKeywords(String name){
-        List<String> keywords =  new ArrayList<>();
+    public List<String> generateKeywords(String name) {
+        List<String> keywords = new ArrayList<>();
         name = name.replaceAll(" ", "");
-        name=name.trim().toLowerCase(Locale.ROOT);
-        Log.d(TAG,name);
-        Log.d(TAG,String.valueOf(name.length()));
+        name = name.trim().toLowerCase(Locale.ROOT);
+        Log.d(TAG, name);
+        Log.d(TAG, String.valueOf(name.length()));
 
         for (int i = 0; i < name.length(); i++) {
-            for(int j = i; j < name.length(); j++){
-                keywords.add(name.substring(i,j+1));
+            for (int j = i; j < name.length(); j++) {
+                keywords.add(name.substring(i, j + 1));
             }
         }
         return keywords;
