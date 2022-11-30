@@ -95,7 +95,7 @@ public class AuctionProductDetailsActivity extends AppCompatActivity {
         //Recieve prodcutID from intent
         Intent intent = getIntent();
         productId = intent.getStringExtra("EXTRA_PRODUCT_ID");
-        Log.d(TAG,productId);
+        Log.d(TAG, productId);
 
         db = FirebaseFirestore.getInstance();
         dbUsers = FirebaseFirestore.getInstance();
@@ -125,11 +125,11 @@ public class AuctionProductDetailsActivity extends AppCompatActivity {
                         final String productTitle = product.get("name").toString();
 
                         List<String> images = (List<String>) product.get("images");
-                        Timestamp ts= (Timestamp) product.get("expiryTime");
-                        Long seconds=ts.getSeconds();
-                        System.out.println("Date = "+ts.toDate());
-                        System.out.println("System Time"+System.currentTimeMillis()/1000);
-                        System.out.println("Db time "+seconds);
+                        Timestamp ts = (Timestamp) product.get("expiryTime");
+                        Long seconds = ts.getSeconds();
+                        System.out.println("Date = " + ts.toDate());
+                        System.out.println("System Time" + System.currentTimeMillis() / 1000);
+                        System.out.println("Db time " + seconds);
                         for (int i = 0; i < images.size(); i++) {
                             slideModels.add(new SlideModel(images.get(i).toString(), ScaleTypes.CENTER_INSIDE));
                         }
@@ -140,14 +140,12 @@ public class AuctionProductDetailsActivity extends AppCompatActivity {
 
                         String bidTag = (String) product.get("price");
                         String productPriceTxt;
-                        if (bidTag != null && System.currentTimeMillis()/1000<seconds ) {
+                        if (bidTag != null && System.currentTimeMillis() / 1000 < seconds) {
                             productPriceTxt = "Rs. " + bidTag;
-                        }
-                        else if(System.currentTimeMillis()/1000>seconds){
+                        } else if (System.currentTimeMillis() / 1000 > seconds) {
                             productPriceTxt = "Auction Expired";
                             //bidNowBtn.setClickable(false);
-                        }
-                        else {
+                        } else {
                             productPriceTxt = "No Bids Yet";
                         }
                         sellerId = product.get("sellerId").toString();
@@ -157,7 +155,7 @@ public class AuctionProductDetailsActivity extends AppCompatActivity {
                             @Override
                             public void onClick(View view) {
                                 final String bidAmt = String.valueOf(placeBid.getText());
-                                if(productPriceTxt == "Auction Expired"){
+                                if (productPriceTxt == "Auction Expired") {
                                     Context context = getApplicationContext();
                                     CharSequence text = "Auction Expired!";
                                     int duration = Toast.LENGTH_SHORT;
@@ -165,7 +163,7 @@ public class AuctionProductDetailsActivity extends AppCompatActivity {
                                     toast.show();
                                     return;
                                 }
-                                if(placeBid.getText().toString().trim().length() == 0){
+                                if (placeBid.getText().toString().trim().length() == 0) {
                                     //bidNowBtn.setClickable(false);
                                     Context context = getApplicationContext();
                                     CharSequence text = "Enter Bid Amount";
@@ -173,18 +171,17 @@ public class AuctionProductDetailsActivity extends AppCompatActivity {
                                     Toast toast = Toast.makeText(context, text, duration);
                                     toast.show();
                                     return;
-                                }
-                                else
-                                    if((Integer.parseInt(placeBid.getText().toString()) <= (Integer.parseInt(bidTag)))){
-                                        Context context = getApplicationContext();
-                                        CharSequence text = "New Bid Amount should be greater than Current Bid Amount";
-                                        int duration = Toast.LENGTH_SHORT;
-                                        Toast toast = Toast.makeText(context, text, duration);
-                                        toast.show();
-                                }
-                                else {
+                                } else if ((Integer.parseInt(placeBid.getText().toString()) <= (Integer.parseInt(bidTag)))) {
+                                    Context context = getApplicationContext();
+                                    CharSequence text = "New Bid Amount should be greater than Current Bid Amount";
+                                    int duration = Toast.LENGTH_SHORT;
+                                    Toast toast = Toast.makeText(context, text, duration);
+                                    toast.show();
+                                } else {
                                     db.collection("auctionProducts").document(productId).update("price", bidAmt);
                                     db.collection("auctionProducts").document(productId).update("highestBidderId", userId);
+                                    db.collection("auctionProducts").document(productId).update("bidders",FieldValue.arrayUnion(userId));
+
 
                                     // inflate the layout of the popup window
                                     LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);

@@ -2,9 +2,13 @@ package com.example.soldout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +27,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -31,13 +37,19 @@ import java.util.List;
 import java.util.Map;
 
 public class ProfilePage extends AppCompatActivity {
-
+    final String TAG = "ProfilePage";
     FirebaseFirestore db;
     FirebaseAuth mAuth;
     String userId;
-    EditText editUserName;
-    EditText phoneNumber;
-    EditText roomNo;
+    EditText editUserName, phoneNumber, roomNo;
+
+    private RecyclerView boughtProductsRecyclerView;
+    SellingProductsRecyclerViewAdapter boughtProductRecyclerViewAdapter;
+    ArrayList<SellingProduct> boughtProductArrayList;
+
+    private RecyclerView bidProductsRecyclerView;
+    AuctionProductsRecyclerViewAdapter bidProductRecyclerViewAdapter;
+    ArrayList<AuctionProduct> bidProductArrayList;
 
     Button addProductBtn, signOutBtn;
 
@@ -45,8 +57,6 @@ public class ProfilePage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_page);
-        LinearLayout myProducts = findViewById(R.id.myProducts);
-        LayoutInflater inflater = LayoutInflater.from(this);
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -59,11 +69,25 @@ public class ProfilePage extends AppCompatActivity {
         addProductBtn = findViewById(R.id.addProductBtn);
         signOutBtn = findViewById(R.id.signOutBtn);
 
+        //Setting your bids and buys
+        boughtProductArrayList = new ArrayList<SellingProduct>();
+        boughtProductsRecyclerView = findViewById(R.id.boughtProductsRecyclerView);
+        boughtProductsRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));
+        boughtProductRecyclerViewAdapter = new SellingProductsRecyclerViewAdapter(this, boughtProductArrayList);
+        boughtProductsRecyclerView.setAdapter(boughtProductRecyclerViewAdapter);
+
+        bidProductArrayList = new ArrayList<AuctionProduct>();
+        bidProductsRecyclerView = findViewById(R.id.bidProductsRecyclerView);
+        bidProductsRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));
+        bidProductRecyclerViewAdapter = new AuctionProductsRecyclerViewAdapter(this, bidProductArrayList);
+        bidProductsRecyclerView.setAdapter(bidProductRecyclerViewAdapter);
+
         signOutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(getApplicationContext(), LandingPageActivity.class));;
+                startActivity(new Intent(getApplicationContext(), LandingPageActivity.class));
+                ;
                 onStart();
             }
         });
@@ -97,6 +121,10 @@ public class ProfilePage extends AppCompatActivity {
             }
         });
 
+        //gets the data of user bids and purchases
+        EventChangListener();
+
+        // getting user data to display
         db.collection("users").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -113,45 +141,63 @@ public class ProfilePage extends AppCompatActivity {
                         phoneNumber.setText(phoneNo, TextView.BufferType.EDITABLE);
                         roomNo.setText(room, TextView.BufferType.EDITABLE);
                         editUserName.setText(fullname, TextView.BufferType.EDITABLE);
-                        for (int i = 0; i < sellingProducts.size(); i++) {
-                            db.collection("sellingProducts").document(sellingProducts.get(i)).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        DocumentSnapshot doc = task.getResult();
-                                        if (doc.exists()) {
-                                            Map<String, Object> product = new HashMap<>();
-                                            product = doc.getData();
-                                            List<String> image = (List<String>) product.get("images");
-                                            if (!image.isEmpty())
-                                                sellingProductsURIs.add(image.get(0));
-                                            else
-                                                Toast.makeText(ProfilePage.this, "Some products might not have any pictures", Toast.LENGTH_SHORT).show();
-                                        }
-                                        for (int i = 0; i < sellingProductsURIs.size(); i++) {
-                                            View view = inflater.inflate(R.layout.item, myProducts, false);
-                                            TextView textView = view.findViewById(R.id.sliderImageText1);
-                                            textView.setText("item ");
-                                            ImageView imageView = view.findViewById(R.id.sliderImage);
-                                            Picasso.get().load(sellingProductsURIs.get(i)).resize(700, 700).placeholder(R.drawable.loading_gif).centerCrop().into(imageView);
-
-                                            myProducts.addView(view);
-                                        }
-                                    }
-                                }
-
-                            });
-                        }
-
-
                     } else {
-//                         Log.d(TAG, "Doc does not exist");
+                        Log.d(TAG, "Doc does not exist");
                     }
                 } else {
-//                     Log.d(TAG, task.getException().getMessage());
+                    Log.d(TAG, task.getException().getMessage());
                 }
-
             }
         });
+        
+    }
+
+    private void EventChangListener() {
+        db.collection("sellingProducts").whereEqualTo("buyerId", userId).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "task is successful: " + task.getResult().toString());
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                SellingProduct sellingProduct = document.toObject(SellingProduct.class);
+                                sellingProduct.setProductId(document.getId());
+                                boughtProductArrayList.add(sellingProduct);
+                            }
+                            if (boughtProductArrayList != null)
+                                Log.d(TAG, String.valueOf(boughtProductArrayList.size()));
+
+                            boughtProductRecyclerViewAdapter.notifyDataSetChanged();
+                        } else {
+                            Log.d(TAG, task.getException().getMessage());
+                            Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+        db.collection("auctionProducts").whereArrayContains("bidders", userId).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "task is successful: " + task.getResult().toString());
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                AuctionProduct auctionProduct = document.toObject(AuctionProduct.class);
+                                auctionProduct.setProductId(document.getId());
+                                bidProductArrayList.add(auctionProduct);
+                            }
+                            if (bidProductArrayList != null)
+                                Log.d(TAG, String.valueOf(bidProductArrayList.size()));
+
+                            bidProductRecyclerViewAdapter.notifyDataSetChanged();
+                        } else {
+                            Log.d(TAG, task.getException().getMessage());
+                            Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
     }
 }

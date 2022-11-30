@@ -28,6 +28,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -51,6 +53,8 @@ public class SellingProductDetailsActivity extends AppCompatActivity {
     TextView sellerInfo;
     String productId;
     Button buyNowBtn;
+    FirebaseUser currentUser;
+    String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +88,9 @@ public class SellingProductDetailsActivity extends AppCompatActivity {
         productId = intent.getStringExtra("EXTRA_PRODUCT_ID");
         Log.d(TAG, productId);
 
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
         db = FirebaseFirestore.getInstance();
+        userId= currentUser.getUid();
         dbUsers = FirebaseFirestore.getInstance();
         imageSlider = findViewById(R.id.imageSlider);
         productDesc = findViewById(R.id.productDesc);
@@ -102,6 +108,8 @@ public class SellingProductDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 db.collection("sellingProducts").document(productId).update("soldStatus", true);
+                db.collection("sellingProducts").document(productId).update("buyerId", userId);
+
                 // inflate the layout of the popup window
                 LayoutInflater inflater = (LayoutInflater)
                         getSystemService(LAYOUT_INFLATER_SERVICE);

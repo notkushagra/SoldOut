@@ -238,6 +238,7 @@ public class AddProduct extends AppCompatActivity {
             List<String> keywords = new ArrayList<>();
             keywords = generateKeywords(productNameTxt);
             product.put("keywords", keywords);
+            List<String> bidders = new ArrayList<>();
 
             product.put("name", productNameTxt);
             product.put("desc", productDescTxt);
@@ -248,6 +249,7 @@ public class AddProduct extends AppCompatActivity {
             product.put("visitCount", initVisitCount);
             product.put("tags", tags);
             product.put("images", images);
+            product.put("bidders", bidders);
             product.put("expiryTime", productTimeFinal);
 
             db.collection("auctionProducts")

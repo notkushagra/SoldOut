@@ -62,6 +62,8 @@ public class SellingProductsRecyclerViewAdapter extends RecyclerView.Adapter<Sel
 
     @Override
     public int getItemCount() {
+        if (sellingProductArrayList==null)
+            return 0;
         return sellingProductArrayList.size();
     }
 
