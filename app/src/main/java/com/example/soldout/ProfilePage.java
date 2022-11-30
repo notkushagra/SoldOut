@@ -25,11 +25,14 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
+
+import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,6 +54,10 @@ public class ProfilePage extends AppCompatActivity {
     AuctionProductsRecyclerViewAdapter bidProductRecyclerViewAdapter;
     ArrayList<AuctionProduct> bidProductArrayList;
 
+    private RecyclerView notificationRecyclerView;
+    NotificationRecyclerViewAdapter notificationRecyclerViewAdapter;
+    ArrayList<Notification> notificationArrayList;
+
     Button addProductBtn, signOutBtn;
 
     @Override
@@ -63,11 +70,15 @@ public class ProfilePage extends AppCompatActivity {
         userId = currentUser.getUid();
         db = FirebaseFirestore.getInstance();
 
-        phoneNumber = findViewById(R.id.phoneNo);
-        roomNo = findViewById(R.id.roomNo);
-        editUserName = findViewById(R.id.editUserName);
         addProductBtn = findViewById(R.id.addProductBtn);
         signOutBtn = findViewById(R.id.signOutBtn);
+
+
+        notificationArrayList = new ArrayList<Notification>();
+        notificationRecyclerView = findViewById(R.id.notificationRecyclerView);
+        notificationRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true));
+        notificationRecyclerViewAdapter = new NotificationRecyclerViewAdapter(this, notificationArrayList);
+        notificationRecyclerView.setAdapter(notificationRecyclerViewAdapter);
 
         //Setting your bids and buys
         boughtProductArrayList = new ArrayList<SellingProduct>();
@@ -123,33 +134,32 @@ public class ProfilePage extends AppCompatActivity {
 
         //gets the data of user bids and purchases
         EventChangListener();
+        NotificationChangeListener();
+    }
 
-        // getting user data to display
+    private void NotificationChangeListener() {
         db.collection("users").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
-                    DocumentSnapshot doc = task.getResult();
-                    if (doc.exists()) {
-                        Map<String, Object> user = new HashMap<>();
-                        user = doc.getData();
-                        final String fullname = (String) user.get("fullname");
-                        final String phoneNo = (String) user.get("phone");
-                        final String room = (String) user.get("room no");
-                        List<String> sellingProducts = (List<String>) user.get("sellingProducts");
-                        List<String> sellingProductsURIs = new ArrayList<>();
-                        phoneNumber.setText(phoneNo, TextView.BufferType.EDITABLE);
-                        roomNo.setText(room, TextView.BufferType.EDITABLE);
-                        editUserName.setText(fullname, TextView.BufferType.EDITABLE);
-                    } else {
-                        Log.d(TAG, "Doc does not exist");
+                    DocumentSnapshot document = task.getResult();
+                    User user = document.toObject(User.class);
+                    List<Notification> notifications = user.notifications;
+
+                    if (notifications != null) {
+                        for (int i = 0; i < notifications.size(); i++) {
+                            Notification notification = notifications.get(i);
+                            notificationArrayList.add(notification);
+                        }
                     }
+                    notificationRecyclerViewAdapter.notifyDataSetChanged();
                 } else {
                     Log.d(TAG, task.getException().getMessage());
+                    Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
-        
+
     }
 
     private void EventChangListener() {

@@ -28,44 +28,11 @@
             android:textColor="@color/pitch_black"
             android:textSize="40dp" />
 
-        <EditText
-            android:id="@+id/editUserName"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/notificationRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:background="@color/lightgrey"
-            android:elegantTextHeight="true"
-            android:fontFamily="@font/alata"
-            android:hint="@string/name"
-            android:padding="10dp"
-            android:singleLine="true" />
-
-
-        <EditText
-            android:id="@+id/roomNo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:background="@color/lightgrey"
-            android:elegantTextHeight="true"
-            android:fontFamily="@font/alata"
-            android:hint="@string/room_no"
-            android:padding="10dp"
-            android:singleLine="true" />
-
-
-        <EditText
-            android:id="@+id/phoneNo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:background="@color/lightgrey"
-            android:elegantTextHeight="true"
-            android:fontFamily="@font/alata"
-            android:hint="@string/phone_no"
-            android:inputType="phone"
-            android:padding="10dp" />
-
+            android:layout_height="200dp"
+            />
 
         <TextView
             android:id="@+id/yourBids"
