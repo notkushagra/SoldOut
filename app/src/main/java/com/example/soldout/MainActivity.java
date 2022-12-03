@@ -10,13 +10,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MainActivity";
     private FirebaseAuth mAuth;
     String productId = "M0t2hceFd4HUoZXBkoM7";
 
@@ -47,19 +56,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-        mAuth = FirebaseAuth.getInstance();
-
-
         final Button signOutBtn = findViewById(R.id.signOutBtn);
         signOutBtn.setOnClickListener(new handleSignOut());
-
 
         final Button sellItemsBtn = findViewById(R.id.sellItemsBtn);
         sellItemsBtn.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, SellingProductsActivity.class)));
         final Button auctionItemsBtn = findViewById(R.id.auctionItemsBtn);
         auctionItemsBtn.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, AuctionProductsActivity.class)));
-
 
 
         final Button productDetailBtn = findViewById(R.id.productDetailBtn);
@@ -74,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         final Button profilePageBtn = findViewById(R.id.profilePageBtn);
         profilePageBtn.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, ProfilePage.class);
-           //intent.putExtra("EXTRA_USER_ID", user);
+            //intent.putExtra("EXTRA_USER_ID", user);
             //creates an intent and puts a pair inside the intent {key:value} -> { "EXTRA_PRODUCT_ID" : productId}
             //Log.d("check ", intent.getStringExtra("EXTRA_PRODUCT_ID"));
             startActivity(intent);
@@ -91,18 +94,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     @Override
     protected void onStart() {
         super.onStart();
-        //check if the user is logged in
-        //if logged in redirect to homepage
-        //if not redirect to login activity where the user can decide if he wants to login or register
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser == null) {
-            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
         }
     }
-
-
 }

@@ -1,6 +1,9 @@
 package com.example.soldout;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
@@ -15,6 +18,18 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
+import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
+import com.google.android.gms.auth.api.identity.BeginSignInRequest;
+import com.google.android.gms.auth.api.identity.Identity;
+import com.google.android.gms.auth.api.identity.SignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -22,19 +37,21 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import org.w3c.dom.Text;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
     FirebaseFirestore db;
     FirebaseAuth mAuth;
     final String TAG = "loginActivity";
-
     boolean doubleBackToExitPressedOnce = false;
 
     @Override
@@ -45,15 +62,11 @@ public class LoginActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
-        // hide action bar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().hide();
-        }
-
         //getting values from layout
         final EditText email = findViewById(R.id.email);
         final EditText password = findViewById(R.id.password);
         final Button loginBtn = findViewById(R.id.loginBtn);
+        final Button googleSignInBtn = findViewById(R.id.googleSignInBtn);
         final TextView registerNowBtn = findViewById(R.id.registerNowBtn);
 
         ProgressDialog progressBar = new ProgressDialog(this);
@@ -78,11 +91,10 @@ public class LoginActivity extends AppCompatActivity {
                     mAuth.signInWithEmailAndPassword(emailTxt, passwordTxt).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
-                                progressBar.dismiss();
+                            progressBar.dismiss();
                             if (task.isSuccessful()) {
-                                startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                            }
-                            else{
+                                startActivity(new Intent(LoginActivity.this, LandingPageActivity.class));
+                            } else {
                                 Toast.makeText(LoginActivity.this, task.getException().getMessage().toString(), Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -98,8 +110,48 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        googleSignInBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SignIn();
+            }
+        });
     }
 
+    private void SignIn() {
+        // Choose authentication providers
+        List<AuthUI.IdpConfig> providers = Arrays.asList(
+                new AuthUI.IdpConfig.EmailBuilder().build(),
+                new AuthUI.IdpConfig.GoogleBuilder().build());
+
+        Intent signInIntent = AuthUI.getInstance()
+                .createSignInIntentBuilder()
+                .setAvailableProviders(providers)
+                .setLogo(R.drawable.logo)
+                .setTheme(R.style.Theme_SoldOut)
+                .build();
+        signInLauncher.launch(signInIntent);
+    }
+
+    private final ActivityResultLauncher<Intent> signInLauncher = registerForActivityResult(
+            new FirebaseAuthUIActivityResultContract(),
+            new ActivityResultCallback<FirebaseAuthUIAuthenticationResult>() {
+                @Override
+                public void onActivityResult(FirebaseAuthUIAuthenticationResult result) {
+                    onSignInResult(result);
+                }
+            }
+    );
+
+    private void onSignInResult(FirebaseAuthUIAuthenticationResult result) {
+        IdpResponse response = result.getIdpResponse();
+        if (result.getResultCode() == RESULT_OK) {
+            // Successfully signed in
+            startActivity(new Intent(LoginActivity.this, ExtraDetailsActivity.class));
+        } else {
+            Toast.makeText(this, result.getIdpResponse().getError().getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
 
     @Override
     public void onBackPressed() {
@@ -125,7 +177,17 @@ public class LoginActivity extends AppCompatActivity {
         //if not redirect to login activity where the user can decide if he wants to login or register
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
-            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            String userId = currentUser.getUid();
+            db.collection("users").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    DocumentSnapshot doc = task.getResult();
+                    if (!doc.exists()) {
+                        Log.d(TAG, "User details does not exist in DB");
+                        startActivity(new Intent(getApplicationContext(), ExtraDetailsActivity.class));
+                    }
+                }
+            });
         }
     }
 }

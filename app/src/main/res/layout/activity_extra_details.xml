@@ -1,0 +1,61 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_sold_out"
+    android:gravity="center"
+    tools:context=".ExtraDetailsActivity">
+
+    <TextView
+        android:id="@+id/welcome_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Few Extra Details"
+        android:textColor="@color/dark1"
+        android:textStyle="bold"
+        android:textSize="30dp"
+        android:fontFamily="@font/alata"
+        android:layout_marginBottom="5dp"
+    />
+
+    <EditText
+        android:id="@+id/phone"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:fontFamily="@font/alata"
+        android:hint="Phone Number"
+        android:inputType="phone"
+        android:maxLines="1" />
+    <EditText
+        android:id="@+id/room_no"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:fontFamily="@font/alata"
+        android:hint="Room Number"
+        android:inputType="text"
+        android:maxLines="1" />
+
+    <Button
+        android:id="@+id/confirmBtn"
+        android:background="@drawable/btn_bg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:fontFamily="@font/alata"
+        android:text="Confirm"
+        android:typeface="sans"
+        android:textColor="@color/white"
+        android:textStyle="bold" />
+
+</LinearLayout>

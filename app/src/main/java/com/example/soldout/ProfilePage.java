@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -78,13 +79,15 @@ public class ProfilePage extends AppCompatActivity {
         db.collection("users").document(userId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                userName = documentSnapshot.get("fullname").toString();
-                String firstName = userName;
+                if (documentSnapshot.get("fullname") != null) {
+                    userName = documentSnapshot.get("fullname").toString();
+                    String firstName = userName;
 
-                if (firstName.contains(" ")) {
-                    firstName = firstName.substring(0, firstName.indexOf(" "));
+                    if (firstName.contains(" ")) {
+                        firstName = firstName.substring(0, firstName.indexOf(" "));
+                    }
+                    heyMsg.setText("Hey " + firstName + "!");
                 }
-                heyMsg.setText("Hey " + firstName + "!");
             }
         });
 
@@ -111,6 +114,7 @@ public class ProfilePage extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 FirebaseAuth.getInstance().signOut();
+                AuthUI.getInstance().signOut(getApplicationContext());
                 startActivity(new Intent(getApplicationContext(), LandingPageActivity.class));
                 onStart();
             }
@@ -156,16 +160,19 @@ public class ProfilePage extends AppCompatActivity {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
-                    User user = document.toObject(User.class);
-                    List<Notification> notifications = user.notifications;
+                    if (document.exists()) {
+                        User user = document.toObject(User.class);
+                        List<Notification> notifications = user.notifications;
 
-                    if (notifications != null) {
-                        for (int i = 0; i < notifications.size(); i++) {
-                            Notification notification = notifications.get(i);
-                            notificationArrayList.add(notification);
+                        if (notifications != null) {
+                            for (int i = 0; i < notifications.size(); i++) {
+                                Notification notification = notifications.get(i);
+                                notificationArrayList.add(notification);
+                            }
                         }
+                    } else {
+                        Log.d(TAG, "doc doesnt exists");
                     }
-                    notificationRecyclerViewAdapter.notifyDataSetChanged();
                 } else {
                     Log.d(TAG, task.getException().getMessage());
                     Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();

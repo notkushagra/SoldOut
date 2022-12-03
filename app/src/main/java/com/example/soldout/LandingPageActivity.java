@@ -16,11 +16,14 @@ import android.widget.Button;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -53,7 +56,7 @@ public class LandingPageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_landing_page);
-
+//        FirebaseAuth.getInstance().signOut();
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()) {
@@ -77,11 +80,11 @@ public class LandingPageActivity extends AppCompatActivity {
         searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                Log.d(TAG,"Search entered");
-                String q= searchBar.getQuery().toString();
-                Log.d(TAG,"Query entered: "+ q);
-                Intent intent = new Intent(getApplicationContext(),SearchResultActivity.class);
-                intent.putExtra("query",q);
+                Log.d(TAG, "Search entered");
+                String q = searchBar.getQuery().toString();
+                Log.d(TAG, "Query entered: " + q);
+                Intent intent = new Intent(getApplicationContext(), SearchResultActivity.class);
+                intent.putExtra("query", q);
                 startActivity(intent);
                 return false;
             }
@@ -194,6 +197,18 @@ public class LandingPageActivity extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) {
             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+        } else {
+            String userId = currentUser.getUid();
+            db.collection("users").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    DocumentSnapshot doc = task.getResult();
+                    if (!doc.exists()) {
+                        Log.d(TAG, "User details does not exist in DB");
+                        startActivity(new Intent(getApplicationContext(), ExtraDetailsActivity.class));
+                    }
+                }
+            });
         }
     }
 

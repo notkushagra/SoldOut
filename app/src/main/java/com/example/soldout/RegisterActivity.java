@@ -76,7 +76,7 @@ public class RegisterActivity extends AppCompatActivity {
                 final String confirm_passwordTxt = confirm_password.getText().toString();
 
                 List<String> auctionProducts = new ArrayList<>();
-                List<String> boughtProducts = new ArrayList<>();
+                List<Map<String, Object>> notifications = new ArrayList<>();
                 List<String> sellingProducts = new ArrayList<>();
 
 
@@ -116,6 +116,7 @@ public class RegisterActivity extends AppCompatActivity {
                                             user.put("room no", room_noTxt);
                                             user.put("auctionProducts", auctionProducts);
                                             user.put("sellingProducts", sellingProducts);
+                                            user.put("notifications", notifications);
 
                                             //adding user to users
                                             db.collection("users").document(userIDTxt)
