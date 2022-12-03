@@ -61,7 +61,7 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
         public void onClick(View view) {
             Notification notification = notificationArrayList.get(getAdapterPosition());
             //notification main mentioned hoga
-            if (notification.isForSale() == true) {
+            if (notification.forSale) {
                 Intent intent = new Intent(context, SellingProductDetailsActivity.class);
                 intent.putExtra("EXTRA_PRODUCT_ID", notification.getProductId());
                 //creates an intent and puts a pair inside the intent {key:value} -> { "EXTRA_PRODUCT_ID" : productId}

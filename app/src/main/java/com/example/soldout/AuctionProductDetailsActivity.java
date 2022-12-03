@@ -89,7 +89,7 @@ public class AuctionProductDetailsActivity extends AppCompatActivity {
         });
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        System.out.println(currentUser.getUid() + " this is the current user");
+        Log.d(TAG,currentUser.getUid() + " this is the current user");
         userId = currentUser.getUid();
 
         //Recieve prodcutID from intent
@@ -192,7 +192,7 @@ public class AuctionProductDetailsActivity extends AppCompatActivity {
 
                                     String text = "Highest bid for product -\"" + productTitle + "\" has been increased to " + bidAmt;
                                     Timestamp timestamp = Timestamp.now();
-                                    Notification notification = new Notification("New Bid", text, timestamp, true, productId);
+                                    Notification notification = new Notification("New Bid", text, timestamp, false, productId);
                                     HashMap<String, Object> notifEntry = notification.toMapObject();
                                     db.collection("users").document(sellerId).update("notifications", FieldValue.arrayUnion(notifEntry));
 
@@ -202,7 +202,7 @@ public class AuctionProductDetailsActivity extends AppCompatActivity {
                                             if (task.isSuccessful()) {
                                                 DocumentSnapshot doc = task.getResult();
                                                 List<String> bidders = (List<String>) doc.get("bidders");
-                                                Log.d(TAG,bidders.toString());
+                                                Log.d(TAG, bidders.toString());
                                                 for (String bidder : bidders) {
                                                     db.collection("users").document(bidder).update("notifications", FieldValue.arrayUnion(notifEntry));
                                                 }

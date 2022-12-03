@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -44,8 +45,7 @@ public class ProfilePage extends AppCompatActivity {
     FirebaseFirestore db;
     FirebaseAuth mAuth;
     String userId;
-    EditText editUserName, phoneNumber, roomNo;
-
+    TextView heyMsg;
     private RecyclerView boughtProductsRecyclerView;
     SellingProductsRecyclerViewAdapter boughtProductRecyclerViewAdapter;
     ArrayList<SellingProduct> boughtProductArrayList;
@@ -59,6 +59,7 @@ public class ProfilePage extends AppCompatActivity {
     ArrayList<Notification> notificationArrayList;
 
     Button addProductBtn, signOutBtn;
+    private String userName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +73,20 @@ public class ProfilePage extends AppCompatActivity {
 
         addProductBtn = findViewById(R.id.addProductBtn);
         signOutBtn = findViewById(R.id.signOutBtn);
+        heyMsg = findViewById(R.id.heyMsg);
 
+        db.collection("users").document(userId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                userName = documentSnapshot.get("fullname").toString();
+                String firstName = userName;
+
+                if (firstName.contains(" ")) {
+                    firstName = firstName.substring(0, firstName.indexOf(" "));
+                }
+                heyMsg.setText("Hey " + firstName + "!");
+            }
+        });
 
         notificationArrayList = new ArrayList<Notification>();
         notificationRecyclerView = findViewById(R.id.notificationRecyclerView);
@@ -98,7 +112,6 @@ public class ProfilePage extends AppCompatActivity {
             public void onClick(View view) {
                 FirebaseAuth.getInstance().signOut();
                 startActivity(new Intent(getApplicationContext(), LandingPageActivity.class));
-                ;
                 onStart();
             }
         });
