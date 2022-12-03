@@ -60,8 +60,10 @@ public class ExtraDetailsActivity extends AppCompatActivity {
 
                 if (phoneTxt.trim().equals("") || room_noTxt.trim().equals("")) {
                     Toast.makeText(ExtraDetailsActivity.this, "Enter all the details", Toast.LENGTH_SHORT).show();
+                    return;
                 } else if (phoneTxt.length() != 10) {
                     Toast.makeText(ExtraDetailsActivity.this, "Phone number should be 10 digits", Toast.LENGTH_SHORT).show();
+                    return;
                 }
                 List<String> auctionProducts = new ArrayList<>();
                 List<String> sellingProducts = new ArrayList<>();
