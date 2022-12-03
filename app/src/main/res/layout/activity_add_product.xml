@@ -76,29 +76,32 @@
 
             <Button
                 android:id="@+id/addImgBtn"
-                android:layout_width="match_parent"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="10dp"
-                android:layout_weight="1"
                 android:background="@drawable/btn_bg"
                 android:drawableStart="@drawable/ic_baseline_image_24"
-                android:drawablePadding="-10dp"
                 android:fontFamily="@font/alata"
-                android:paddingLeft="20dp"
-                android:text="A D D   I M A G E"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                android:typeface="sans" />
+                android:paddingLeft="12dp" />
+            <Button
+                android:id="@+id/openCameraBtn"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:background="@drawable/btn_bg"
+                android:drawableStart="@drawable/ic_baseline_camera_24"
+                android:fontFamily="@font/alata"
+                android:paddingLeft="12dp" />
 
             <Spinner
                 android:id="@+id/spinnerTags"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="2"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
                 android:entries="@array/tags"
-                android:padding="10dp"
-
                 android:spinnerMode="dropdown" />
         </LinearLayout>
 
@@ -161,6 +164,8 @@
         app:itemIconTint="@drawable/item_selector"
         app:itemTextColor="@drawable/item_selector"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/masterLL"
         app:menu="@menu/bottom_nav_menu" />
 </androidx.constraintlayout.widget.ConstraintLayout>

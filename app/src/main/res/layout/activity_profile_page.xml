@@ -11,7 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
-
         android:padding="20dp"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,26 +21,37 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="10dp"
             android:fontFamily="@font/alata"
+            android:paddingLeft="10dp"
             android:text="@string/hey_there"
             android:textColor="@color/pitch_black"
             android:textSize="40dp" />
 
+        <TextView
+            android:id="@+id/notif"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/alata"
+            android:text="Notifications"
+            android:textColor="@color/pitch_black"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/notificationRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            />
+            android:layout_height="150dp" />
 
         <TextView
             android:id="@+id/yourBids"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
             android:fontFamily="@font/alata"
             android:text="Recent Purchases"
-            android:textSize="20dp" />
+            android:textColor="@color/pitch_black"
+            android:textSize="20dp"
+            android:textStyle="bold" />
 
 
         <androidx.recyclerview.widget.RecyclerView
@@ -55,14 +65,15 @@
             android:id="@+id/yourProducts"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
             android:fontFamily="@font/alata"
             android:text="@string/your_bids"
-            android:textSize="20dp" />
+            android:textColor="@color/pitch_black"
+            android:textSize="20dp"
+            android:textStyle="bold" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/bidProductsRecyclerView"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="150dp"
             android:orientation="horizontal"
             android:scrollbars="horizontal" />
@@ -70,7 +81,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal">
 
             <Button

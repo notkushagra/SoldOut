@@ -41,7 +41,7 @@ import java.util.Map;
 
 public class SellingProductDetailsActivity extends AppCompatActivity {
 
-    String TAG = "SellingProductDetailsActivity";
+    final String TAG = "SellingProductDetails";
     String sellerId;
     FirebaseFirestore db, dbUsers;
 
@@ -90,7 +90,7 @@ public class SellingProductDetailsActivity extends AppCompatActivity {
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         db = FirebaseFirestore.getInstance();
-        userId= currentUser.getUid();
+        userId = currentUser.getUid();
         dbUsers = FirebaseFirestore.getInstance();
         imageSlider = findViewById(R.id.imageSlider);
         productDesc = findViewById(R.id.productDesc);

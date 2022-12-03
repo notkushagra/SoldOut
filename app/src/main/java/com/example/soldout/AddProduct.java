@@ -3,16 +3,23 @@ package com.example.soldout;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ClipData;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -40,6 +47,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -64,7 +72,7 @@ public class AddProduct extends AppCompatActivity {
     FirebaseFirestore db;
 
     EditText productName, productDesc, productPrice, productTime;
-    Button addImgBtn, sellBtn, auctionBtn;
+    Button addImgBtn, openCameraBtn, sellBtn, auctionBtn;
     ProgressDialog progressBar;
     Spinner spinnerTags;
 
@@ -76,8 +84,9 @@ public class AddProduct extends AppCompatActivity {
 
     ArrayList<SlideModel> slideModels;
     private ImageSlider imageSlider;
-    String imageEncoded;
-    List<String> imagesEncodedList;
+
+    private static final int CAMERA_REQUEST = 1888;
+    private static final int MY_CAMERA_PERMISSION_CODE = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +125,7 @@ public class AddProduct extends AppCompatActivity {
         currentUserId = currentUser.getUid();
 
         addImgBtn = findViewById(R.id.addImgBtn);
+        openCameraBtn = findViewById(R.id.openCameraBtn);
         sellBtn = findViewById(R.id.sellBtn);
         auctionBtn = findViewById(R.id.auctionBtn);
         productDesc = findViewById(R.id.productDesc);
@@ -135,9 +145,48 @@ public class AddProduct extends AppCompatActivity {
         mImageUriArray = new ArrayList<Uri>();
 
         addImgBtn.setOnClickListener(new handleAddImage());
+        openCameraBtn.setOnClickListener(new handleCamera());
         sellBtn.setOnClickListener(new handleSellBtn());
         auctionBtn.setOnClickListener(new handleAuctionBtn());
     }
+
+    class handleCamera implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            Log.d(TAG, "Clicked Camera button");
+            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            cameraResultLauncher.launch(cameraIntent);
+        }
+    }
+
+    ActivityResultLauncher<Intent> cameraResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        // There are no request codes
+                        Log.d(TAG, "Camera Result OK");
+                        Intent data = result.getData();
+                        if (result.getData().getExtras().get("data") != null) {
+                            // SINGLE FILE SELECTED
+                            Bitmap bitmap = (Bitmap) result.getData().getExtras().get("data");
+                            Uri mImageUri = getImageUri(getApplicationContext(), bitmap);
+                            mImageUriArray.add(mImageUri);
+                            //adding a slidemodel in slidemodels array
+                            slideModels.add(new SlideModel(mImageUri.toString(), ScaleTypes.CENTER_INSIDE));
+                            Log.d(TAG, "imgUri of Camera - " + mImageUri.toString());
+                        } else {
+                            Log.d(TAG, "No data");
+                        }
+                    } else {
+                        Log.d(TAG, "No image picked");
+                        Toast.makeText(AddProduct.this, "Pick at least one image", Toast.LENGTH_LONG).show();
+                    }
+                    imageSlider.setImageList(slideModels, ScaleTypes.CENTER_INSIDE);
+                    Log.d(TAG, "Set Image List");
+                }
+            });
 
     class handleAddImage implements View.OnClickListener {
         @Override
@@ -151,7 +200,9 @@ public class AddProduct extends AppCompatActivity {
         }
     }
 
-    ActivityResultLauncher<Intent> addImageResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+    ActivityResultLauncher<Intent> addImageResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
         @Override
         public void onActivityResult(ActivityResult result) {
             try {
@@ -159,15 +210,13 @@ public class AddProduct extends AppCompatActivity {
                 if (resultCode == Activity.RESULT_OK) {
                     // There are no request codes so no need to check for req code
                     Intent data = result.getData();
-                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                    imagesEncodedList = new ArrayList<String>();
 
                     if (data.getData() != null) {
                         // SINGLE FILE SELECTED
                         Uri mImageUri = data.getData();
                         mImageUriArray.add(mImageUri);
+                        slideModels.add(new SlideModel(mImageUri.toString(), ScaleTypes.CENTER_INSIDE));
                         Log.d(TAG, "added only 1 imgUri in mImageUri");
-
                     } else {
                         if (data.getClipData() != null) {
                             // MULTIPLE FILE SELECTED
@@ -175,10 +224,10 @@ public class AddProduct extends AppCompatActivity {
                             for (int i = 0; i < mClipData.getItemCount(); i++) {
                                 String finalI = String.valueOf(i);
                                 ClipData.Item item = mClipData.getItemAt(i);
-                                Uri uri = item.getUri();
-                                mImageUriArray.add(uri);
+                                Uri mImageUri = item.getUri();
+                                mImageUriArray.add(mImageUri);
                                 Log.d(TAG, "added image: " + finalI);
-
+                                slideModels.add(new SlideModel(mImageUri.toString(), ScaleTypes.CENTER_INSIDE));
                             }
                             Log.v(TAG, "Selected Images - " + mImageUriArray.size());
                         }
@@ -186,10 +235,6 @@ public class AddProduct extends AppCompatActivity {
                 } else {
                     Log.d(TAG, "No image picked");
                     Toast.makeText(AddProduct.this, "Pick at least one image", Toast.LENGTH_LONG).show();
-                }
-
-                for (int i = 0; i < mImageUriArray.size(); i++) {
-                    slideModels.add(new SlideModel(mImageUriArray.get(i).toString(), ScaleTypes.CENTER_INSIDE));
                 }
                 imageSlider.setImageList(slideModels, ScaleTypes.CENTER_INSIDE);
 
@@ -422,5 +467,12 @@ public class AddProduct extends AppCompatActivity {
             }
         }
         return keywords;
+    }
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
     }
 }
