@@ -202,8 +202,9 @@ public class AuctionProductDetailsActivity extends AppCompatActivity {
                                             if (task.isSuccessful()) {
                                                 DocumentSnapshot doc = task.getResult();
                                                 List<String> bidders = (List<String>) doc.get("bidders");
+                                                Log.d(TAG,bidders.toString());
                                                 for (String bidder : bidders) {
-                                                    db.collection("users").document(sellerId).update("notifications", FieldValue.arrayUnion(notifEntry));
+                                                    db.collection("users").document(bidder).update("notifications", FieldValue.arrayUnion(notifEntry));
                                                 }
                                             } else {
                                                 Log.d(TAG, task.getException().getMessage());

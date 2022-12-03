@@ -17,19 +17,21 @@
             android:layout_margin="10dp"
             android:orientation="vertical">
 
-
             <TextView
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TextView"
+                android:text="@string/loading"
+                android:fontFamily="@font/alata"
+                android:textColor="@color/black"
                 android:textSize="20dp" />
 
             <TextView
                 android:id="@+id/text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TextView"
+                android:text="@string/loading"
+                android:textColor="@color/darkgrey"
                 android:textSize="15dp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>

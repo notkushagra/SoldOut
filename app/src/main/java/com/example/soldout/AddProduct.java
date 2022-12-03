@@ -65,6 +65,7 @@ import com.denzcoskun.imageslider.models.SlideModel;
 public class AddProduct extends AppCompatActivity {
     final String TAG = "AddProductActivity";
 
+    final int MY_CAMERA_REQUEST_CODE = 100;
     String currentUserId;
     FirebaseStorage storage;
     FirebaseAuth mAuth;
@@ -151,11 +152,31 @@ public class AddProduct extends AppCompatActivity {
     }
 
     class handleCamera implements View.OnClickListener {
+        @RequiresApi(api = Build.VERSION_CODES.M)
         @Override
         public void onClick(View v) {
             Log.d(TAG, "Clicked Camera button");
-            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            cameraResultLauncher.launch(cameraIntent);
+
+            if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);
+            } else {
+                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                cameraResultLauncher.launch(cameraIntent);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == MY_CAMERA_REQUEST_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permission granted", Toast.LENGTH_LONG).show();
+                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                cameraResultLauncher.launch(cameraIntent);
+            } else {
+                Toast.makeText(this, "Permission denied", Toast.LENGTH_LONG).show();
+            }
         }
     }
 

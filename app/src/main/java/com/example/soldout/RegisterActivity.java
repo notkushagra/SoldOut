@@ -115,7 +115,6 @@ public class RegisterActivity extends AppCompatActivity {
                                             user.put("phone", phoneTxt);
                                             user.put("room no", room_noTxt);
                                             user.put("auctionProducts", auctionProducts);
-//                                            user.put("boughtProducts", boughtProducts);
                                             user.put("sellingProducts", sellingProducts);
 
                                             //adding user to users
