@@ -2,6 +2,7 @@ package com.example.soldout;
 
 import com.google.firebase.Timestamp;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class Notification {
@@ -59,5 +60,17 @@ public class Notification {
 
     public void setProductId(String productId) {
         this.productId = productId;
+    }
+
+    public HashMap<String, Object> toMapObject() {
+        HashMap<String, Object> hashMap = new HashMap<String, Object>();
+
+        hashMap.put("title", this.title);
+        hashMap.put("text", this.text);
+        hashMap.put("timeOfGen", this.timeOfGen);
+        hashMap.put("forSale", this.forSale);
+        hashMap.put("productId", this.productId);
+
+        return hashMap;
     }
 }

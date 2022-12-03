@@ -28,12 +28,18 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.ServerTimestamp;
+import com.google.firebase.firestore.SetOptions;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,7 +49,7 @@ public class SellingProductDetailsActivity extends AppCompatActivity {
 
     final String TAG = "SellingProductDetails";
     String sellerId;
-    FirebaseFirestore db, dbUsers;
+    FirebaseFirestore db;
 
     private ImageSlider imageSlider;
 
@@ -55,6 +61,10 @@ public class SellingProductDetailsActivity extends AppCompatActivity {
     Button buyNowBtn;
     FirebaseUser currentUser;
     String userId;
+    String userName;
+    String productDescTxt, productTitle;
+    boolean soldStatus;
+    List<String> images;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +101,20 @@ public class SellingProductDetailsActivity extends AppCompatActivity {
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         db = FirebaseFirestore.getInstance();
         userId = currentUser.getUid();
-        dbUsers = FirebaseFirestore.getInstance();
+        db.collection("users").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot doc = task.getResult();
+                    if (doc.exists()) {
+                        Map<String, Object> user = new HashMap<>();
+                        user = doc.getData();
+                        userName = user.get("fullname").toString();
+                    }
+                }
+            }
+        });
+
         imageSlider = findViewById(R.id.imageSlider);
         productDesc = findViewById(R.id.productDesc);
         productName = findViewById(R.id.productName);
@@ -107,8 +130,29 @@ public class SellingProductDetailsActivity extends AppCompatActivity {
         buyNowBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //buyer check
+                if (sellerId.equals(userId)) {
+                    Toast.makeText(getApplicationContext(), "You shouldn't bid on or buy your own products :)", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+
                 db.collection("sellingProducts").document(productId).update("soldStatus", true);
                 db.collection("sellingProducts").document(productId).update("buyerId", userId);
+
+//                String title, text;
+//                Timestamp timeOfGen;
+//                boolean forSale;
+//                String productId;
+
+                // add notification in seller and buyer
+
+                String text = "Your product - \"" + productTitle + "\" was bought by " + userName + ".";
+                Timestamp timestamp = Timestamp.now();
+                Notification notification = new Notification("Bought", text, timestamp, true, productId);
+                HashMap<String, Object> notifEntry = notification.toMapObject();
+                db.collection("users").document(sellerId).update("notifications", FieldValue.arrayUnion(notifEntry));
+
 
                 // inflate the layout of the popup window
                 LayoutInflater inflater = (LayoutInflater)
@@ -147,11 +191,10 @@ public class SellingProductDetailsActivity extends AppCompatActivity {
                     if (doc.exists()) {
                         Map<String, Object> product = new HashMap<>();
                         product = doc.getData();
-                        final String productDescTxt = product.get("desc").toString();
-                        final String productTitle = product.get("name").toString();
-                        final boolean soldStatus = (boolean) product.get("soldStatus");
-
-                        List<String> images = (List<String>) product.get("images");
+                        productDescTxt = product.get("desc").toString();
+                        productTitle = product.get("name").toString();
+                        soldStatus = (boolean) product.get("soldStatus");
+                        images = (List<String>) product.get("images");
 
                         for (int i = 0; i < images.size(); i++) {
                             slideModels.add(new SlideModel(images.get(i).toString(), ScaleTypes.CENTER_INSIDE));
@@ -182,7 +225,7 @@ public class SellingProductDetailsActivity extends AppCompatActivity {
                         sellerId = product.get("sellerId").toString();
                         productPrice.setText(productPriceTxt);
 
-                        dbUsers.collection("users").document(sellerId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        db.collection("users").document(sellerId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                 if (task.isSuccessful()) {

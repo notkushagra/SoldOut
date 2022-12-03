@@ -203,47 +203,47 @@ public class AddProduct extends AppCompatActivity {
     ActivityResultLauncher<Intent> addImageResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
-        @Override
-        public void onActivityResult(ActivityResult result) {
-            try {
-                final int resultCode = result.getResultCode();
-                if (resultCode == Activity.RESULT_OK) {
-                    // There are no request codes so no need to check for req code
-                    Intent data = result.getData();
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    try {
+                        final int resultCode = result.getResultCode();
+                        if (resultCode == Activity.RESULT_OK) {
+                            // There are no request codes so no need to check for req code
+                            Intent data = result.getData();
 
-                    if (data.getData() != null) {
-                        // SINGLE FILE SELECTED
-                        Uri mImageUri = data.getData();
-                        mImageUriArray.add(mImageUri);
-                        slideModels.add(new SlideModel(mImageUri.toString(), ScaleTypes.CENTER_INSIDE));
-                        Log.d(TAG, "added only 1 imgUri in mImageUri");
-                    } else {
-                        if (data.getClipData() != null) {
-                            // MULTIPLE FILE SELECTED
-                            ClipData mClipData = data.getClipData();
-                            for (int i = 0; i < mClipData.getItemCount(); i++) {
-                                String finalI = String.valueOf(i);
-                                ClipData.Item item = mClipData.getItemAt(i);
-                                Uri mImageUri = item.getUri();
+                            if (data.getData() != null) {
+                                // SINGLE FILE SELECTED
+                                Uri mImageUri = data.getData();
                                 mImageUriArray.add(mImageUri);
-                                Log.d(TAG, "added image: " + finalI);
                                 slideModels.add(new SlideModel(mImageUri.toString(), ScaleTypes.CENTER_INSIDE));
+                                Log.d(TAG, "added only 1 imgUri in mImageUri");
+                            } else {
+                                if (data.getClipData() != null) {
+                                    // MULTIPLE FILE SELECTED
+                                    ClipData mClipData = data.getClipData();
+                                    for (int i = 0; i < mClipData.getItemCount(); i++) {
+                                        String finalI = String.valueOf(i);
+                                        ClipData.Item item = mClipData.getItemAt(i);
+                                        Uri mImageUri = item.getUri();
+                                        mImageUriArray.add(mImageUri);
+                                        Log.d(TAG, "added image: " + finalI);
+                                        slideModels.add(new SlideModel(mImageUri.toString(), ScaleTypes.CENTER_INSIDE));
+                                    }
+                                    Log.v(TAG, "Selected Images - " + mImageUriArray.size());
+                                }
                             }
-                            Log.v(TAG, "Selected Images - " + mImageUriArray.size());
+                        } else {
+                            Log.d(TAG, "No image picked");
+                            Toast.makeText(AddProduct.this, "Pick at least one image", Toast.LENGTH_LONG).show();
                         }
-                    }
-                } else {
-                    Log.d(TAG, "No image picked");
-                    Toast.makeText(AddProduct.this, "Pick at least one image", Toast.LENGTH_LONG).show();
-                }
-                imageSlider.setImageList(slideModels, ScaleTypes.CENTER_INSIDE);
+                        imageSlider.setImageList(slideModels, ScaleTypes.CENTER_INSIDE);
 
-            } catch (Exception e) {
-                Log.d(TAG, "catch block " + e.getMessage());
-                Toast.makeText(AddProduct.this, e.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        }
-    });
+                    } catch (Exception e) {
+                        Log.d(TAG, "catch block " + e.getMessage());
+                        Toast.makeText(AddProduct.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
 
     class handleAuctionBtn implements View.OnClickListener {
         @Override
@@ -278,7 +278,9 @@ public class AddProduct extends AppCompatActivity {
             List<String> tags = new ArrayList<>();
             List<String> images = new ArrayList<>();
             tags.add("all");
-            tags.add(spinnerTags.getSelectedItem().toString().toLowerCase(Locale.ROOT));
+            String tag = spinnerTags.getSelectedItem().toString();
+            tag = tag.toLowerCase(Locale.ROOT).replaceAll(" ", "").trim();
+            tags.add(tag);
             //putting keywords in products
             List<String> keywords = new ArrayList<>();
             keywords = generateKeywords(productNameTxt);

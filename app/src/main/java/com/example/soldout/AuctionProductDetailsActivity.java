@@ -154,6 +154,13 @@ public class AuctionProductDetailsActivity extends AppCompatActivity {
                         bidNowBtn.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
+
+                                //buyer check
+                                if (sellerId.equals(userId)) {
+                                    Toast.makeText(getApplicationContext(), "You shouldn't bid on or buy your own products :)", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+
                                 final String bidAmt = String.valueOf(placeBid.getText());
                                 if (productPriceTxt == "Auction Expired") {
                                     Context context = getApplicationContext();
@@ -163,6 +170,7 @@ public class AuctionProductDetailsActivity extends AppCompatActivity {
                                     toast.show();
                                     return;
                                 }
+
                                 if (placeBid.getText().toString().trim().length() == 0) {
                                     //bidNowBtn.setClickable(false);
                                     Context context = getApplicationContext();
@@ -180,8 +188,28 @@ public class AuctionProductDetailsActivity extends AppCompatActivity {
                                 } else {
                                     db.collection("auctionProducts").document(productId).update("price", bidAmt);
                                     db.collection("auctionProducts").document(productId).update("highestBidderId", userId);
-                                    db.collection("auctionProducts").document(productId).update("bidders",FieldValue.arrayUnion(userId));
+                                    db.collection("auctionProducts").document(productId).update("bidders", FieldValue.arrayUnion(userId));
 
+                                    String text = "Highest bid for product -\"" + productTitle + "\" has been increased to " + bidAmt;
+                                    Timestamp timestamp = Timestamp.now();
+                                    Notification notification = new Notification("New Bid", text, timestamp, true, productId);
+                                    HashMap<String, Object> notifEntry = notification.toMapObject();
+                                    db.collection("users").document(sellerId).update("notifications", FieldValue.arrayUnion(notifEntry));
+
+                                    db.collection("auctionProducts").document(productId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                DocumentSnapshot doc = task.getResult();
+                                                List<String> bidders = (List<String>) doc.get("bidders");
+                                                for (String bidder : bidders) {
+                                                    db.collection("users").document(sellerId).update("notifications", FieldValue.arrayUnion(notifEntry));
+                                                }
+                                            } else {
+                                                Log.d(TAG, task.getException().getMessage());
+                                            }
+                                        }
+                                    });
 
                                     // inflate the layout of the popup window
                                     LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
