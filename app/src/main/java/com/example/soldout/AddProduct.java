@@ -368,7 +368,9 @@ public class AddProduct extends AppCompatActivity {
             List<String> tags = new ArrayList<>();
             List<String> images = new ArrayList<>();
             tags.add("all");
-            tags.add(spinnerTags.getSelectedItem().toString().toLowerCase(Locale.ROOT));
+            String tag = spinnerTags.getSelectedItem().toString();
+            tag = tag.toLowerCase(Locale.ROOT).replaceAll(" ", "").trim();
+            tags.add(tag);
 
             //putting keywords in products
             List<String> keywords = new ArrayList<>();
