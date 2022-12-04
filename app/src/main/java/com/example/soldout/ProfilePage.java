@@ -161,15 +161,19 @@ public class ProfilePage extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
+                        Log.d(TAG, "doc exists");
                         User user = document.toObject(User.class);
+                        Log.d(TAG, user.toString());
                         List<Notification> notifications = user.notifications;
-
+                        Log.d(TAG, notifications.toString());
                         if (notifications != null) {
                             for (int i = 0; i < notifications.size(); i++) {
                                 Notification notification = notifications.get(i);
                                 notificationArrayList.add(notification);
                             }
                         }
+                        Log.d(TAG, "Notifications array size - " + notifications.size());
+                        notificationRecyclerViewAdapter.notifyDataSetChanged();
                     } else {
                         Log.d(TAG, "doc doesnt exists");
                     }
